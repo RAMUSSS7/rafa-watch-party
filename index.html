@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-    <meta name="google-site-verification" content="nWnhqcIe0B5gsEVxkL3emG2GqUifQZ15DyAENhmXuIY" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAFA - Ultimate Watch Party
-        
-    </title>
+    <title>RAFA - Ultimate Watch Party</title>
+    <meta name="google-site-verification" content="yEGNzRBKaEER6NSFX0CWZWYsmPaPVj_M" />
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #060913 0%, #110a24 100%);
@@ -18,10 +16,10 @@
             --text-muted: #a5a9b8;
         }
 
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 25px; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; transition: background 0.5s ease; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 25px; transition: all 0.5s ease; }
         .hidden { display: none !important; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: all 0.3s ease; }
         
         h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
@@ -31,9 +29,16 @@
         .btn-primary { width: 100%; padding: 15px; background: linear-gradient(to right, var(--primary-purple), #a04ef6); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6); }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-secondary { background: #1c183a; border: 1px solid var(--border-color); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-secondary:hover { background: var(--border-color); }
 
-        .cinema-layout { display: flex; flex-direction: column; gap: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .room-input-container { position: relative; width: 100%; }
+        .gen-btn { position: absolute; right: 10px; top: 10px; background: var(--primary-purple); border: none; color: white; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+
+        .cinema-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; transition: all 0.5s ease; }
+        @media (max-width: 850px) { .cinema-layout { grid-template-columns: 1fr; } }
+
         .video-block { position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden; min-height: 450px; }
         video, #youtube-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
 
@@ -43,11 +48,11 @@
         .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .user-badge { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--primary-purple); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block; margin-right: 5px; }
 
-        .chat-box { display: flex; flex-direction: column; height: 380px; }
+        .chat-box { display: flex; flex-direction: column; height: 450px; transition: opacity 0.3s ease; }
         .messages-area { flex: 1; overflow-y: auto; padding: 15px; font-size: 15px; background: rgba(10, 14, 28, 0.4); border-radius: 8px; margin-bottom: 12px; border: 1px solid #1c2136; }
         
         .msg-line { margin-bottom: 10px; line-height: 1.4; clear: both; }
-        .msg-bubble { display: inline-block; padding: 8px 14px; border-radius: 12px; }
+        .msg-bubble { display: inline-block; padding: 8px 14px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
         .msg-mine .msg-bubble { background: linear-gradient(135deg, #5a189a, #7b2cbf); color: white; float: right; }
         .msg-friend .msg-bubble { background: #161b33; border: 1px solid var(--border-color); float: left; }
         .msg-friend strong { color: var(--neon-blue); display: block; font-size: 12px; margin-bottom: 3px; }
@@ -55,14 +60,46 @@
         .msg-system span { background: linear-gradient(90deg, rgba(6,9,19,0.8), rgba(28,10,36,0.8)); border: 1px solid #3c1e6d; padding: 6px 16px; border-radius: 30px; font-size: 13px; color: #b8b1ff; }
 
         .typing-indicator { font-size: 12px; color: var(--text-muted); height: 18px; margin-bottom: 5px; }
-        .chat-input-group { display: flex; gap: 8px; }
+        .chat-input-group { display: flex; gap: 8px; margin-top: 8px; }
         .chat-input-group input { flex: 1; margin: 0; }
         .chat-input-group button { padding: 0 25px; background: var(--primary-purple); border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        .emoji-bar { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid #1c2136; margin-bottom: 8px; }
+        .emoji-btn { background: none; border: none; font-size: 20px; cursor: pointer; transition: transform 0.2s; padding: 2px; }
+        .emoji-btn:hover { transform: scale(1.3); }
+
+        /* الأداة الجديدة: شريط التحكم بالشفافية */
+        .opacity-control { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+        .opacity-control input { margin: 0; width: 80px; padding: 0; height: 5px; }
+
+        /* زر الخروج العائم الفاخر للسينما مود */
+        .exit-cinema-btn {
+            position: fixed; top: 20px; left: 20px; z-index: 9999;
+            background: linear-gradient(135deg, #ff0055, #990033);
+            color: white; border: none; font-weight: bold; padding: 12px 20px;
+            border-radius: 50px; cursor: pointer; font-size: 14px;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+            display: none; transition: transform 0.2s;
+        }
+        .exit-cinema-btn:hover { transform: scale(1.1); }
+
+        /* إعدادات وضع السينما المفعل */
+        body.cinema-mode-active { background: #020205; }
+        body.cinema-mode-active .container { max-width: 100%; padding: 10px; }
+        body.cinema-mode-active .room-header, 
+        body.cinema-mode-active .card:not(.video-block):not(.chat-box) { display: none !important; }
+        body.cinema-mode-active .cinema-layout { grid-template-columns: 3fr 1fr; gap: 15px; }
+        body.cinema-mode-active .video-block, body.cinema-mode-active .chat-box { background: rgba(5, 5, 10, 0.9); border-color: #110f1c; }
+        body.cinema-mode-active .exit-cinema-btn { display: block !important; }
     </style>
 </head>
 <body>
 
+    <!-- زر الخروج العائم من وضع السينما -->
+    <button class="exit-cinema-btn" id="exit-cinema-floating-btn">❌ Close Cinema Mode</button>
+
     <div class="container">
+        <!-- ================= LOBBY INTERFACE ================= -->
         <div id="lobby-container" class="card">
             <h1 style="text-align: center; margin-bottom: 30px; font-size: 36px;">RAFA WATCH PARTY</h1>
             
@@ -71,7 +108,10 @@
 
             <label style="font-weight: bold; display:block; margin-bottom: 8px;">2. Room Credentials</label>
             <div class="form-grid">
-                <input type="text" id="room-input" placeholder="Create or Enter Room Name...">
+                <div class="room-input-container">
+                    <input type="text" id="room-input" placeholder="Room Name...">
+                    <button type="button" class="gen-btn" id="rand-room-btn">⚡ Auto Gen</button>
+                </div>
                 <input type="password" id="password-input" placeholder="Enter Room Password...">
             </div>
 
@@ -81,18 +121,21 @@
             <button id="join-btn" class="btn-primary" style="margin-top: 10px;">Connect & Launch Theater Room 🍿</button>
         </div>
 
+        <!-- ================= INSIDE THEATER ================= -->
         <div id="cinema-container" class="hidden">
             <div class="room-header card" style="padding: 15px 20px; margin-bottom: 15px;">
                 <div><h2 id="room-title-display" style="margin: 0; font-size: 20px;">Room: None</h2></div>
                 <div id="online-users-container"></div>
             </div>
 
-            <div class="card" style="padding: 15px; margin-bottom: 15px;">
-                <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube or MP4 link here and press Enter to switch the movie for everyone!" style="margin: 0;">
+            <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube or MP4 link here and press Enter to switch..." style="margin: 0; flex: 1;">
+                <button class="btn-secondary" id="cinema-toggle-btn" style="white-space: nowrap;">🎬 Cinema Mode</button>
             </div>
 
             <div class="cinema-layout">
-                <div class="video-block card">
+                <!-- Video Block -->
+                <div class="video-block card" style="margin-bottom: 0;">
                     <div id="syncOverlay" class="sync-overlay">
                         <button class="sync-btn">▶ CLICK TO START & SYNC CINEMA</button>
                     </div>
@@ -101,9 +144,29 @@
                     <div id="youtube-player" class="hidden"></div>
                 </div>
 
-                <div class="chat-box card">
-                    <h3>💬 Live Chat</h3>
+                <!-- Chat Block -->
+                <div class="chat-box card" id="main-chat-card" style="margin-bottom: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <h3 style="margin: 0;">💬 Live Chat</h3>
+                        <!-- أداة التحكم بالشفافية مدمجة بشكل أنيق -->
+                        <div class="opacity-control">
+                            <span>Opacity:</span>
+                            <input type="range" id="chat-opacity-slider" min="20" max="100" value="100">
+                        </div>
+                    </div>
+                    
                     <div id="chat-messages" class="messages-area"></div>
+                    
+                    <!-- Quick Emoji Bar -->
+                    <div class="emoji-bar">
+                        <button class="emoji-btn" onclick="sendQuickEmoji('😂')">😂</button>
+                        <button class="emoji-btn" onclick="sendQuickEmoji('😮')">😮</button>
+                        <button class="emoji-btn" onclick="sendQuickEmoji('😱')">😱</button>
+                        <button class="emoji-btn" onclick="sendQuickEmoji('🔥')">🔥</button>
+                        <button class="emoji-btn" onclick="sendQuickEmoji('🍿')">🍿</button>
+                        <button class="emoji-btn" onclick="sendQuickEmoji('❤️')">❤️</button>
+                    </div>
+
                     <div id="typing-box" class="typing-indicator"></div>
                     <div class="chat-input-group">
                         <input type="text" id="chat-input" placeholder="Type a message...">
@@ -124,6 +187,57 @@
         let initialVideoUrl = "";
         const vp = document.getElementById("video-player");
         const ytd = document.getElementById("youtube-player");
+        const chatCard = document.getElementById("main-chat-card");
+
+        // كود تشغيل تنبيه صوتي خفيف مدمج برمجياً بدون ملفات خارجية
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playPingSound() {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // نغمة D5 ناعمة
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } catch(e) { console.log("Audio not allowed yet"); }
+        }
+
+        // منزلق التحكم بشفافية الشات لراحة العينين
+        document.getElementById("chat-opacity-slider").addEventListener("input", (e) => {
+            chatCard.style.opacity = e.target.value / 100;
+        });
+
+        // دالة التحكم بتشغيل وإلغاء وضع السينما
+        function toggleCinemaMode(forceClose = false) {
+            if (forceClose) {
+                document.body.classList.remove("cinema-mode-active");
+            } else {
+                document.body.classList.toggle("cinema-mode-active");
+            }
+
+            const btn = document.getElementById("cinema-toggle-btn");
+            if(document.body.classList.contains("cinema-mode-active")) {
+                btn.innerText = "✨ Normal Mode";
+                btn.style.background = "#8a2be2";
+            } else {
+                btn.innerText = "🎬 Cinema Mode";
+                btn.style.background = "#1c183a";
+            }
+        }
+
+        // ربط أزرار السينما (الرئيسي والعائم الجديد)
+        document.getElementById("cinema-toggle-btn").addEventListener("click", () => toggleCinemaMode());
+        document.getElementById("exit-cinema-floating-btn").addEventListener("click", () => toggleCinemaMode(true));
+
+        // توليد غرفة عشوائية فريدة
+        document.getElementById("rand-room-btn").addEventListener("click", () => {
+            const randomName = "RAFA-" + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById("room-input").value = randomName;
+        });
 
         function getYouTubeId(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -191,7 +305,7 @@
             if(!myName || !roomName || !roomPassword) return alert("Please fill Username, Room Name, and Password!");
 
             socket.emit("join room", { username: myName, room: roomName, password: roomPassword, videoUrl: initialVideoUrl });
-            document.getElementById("room-title-display").innerText = `RAFA Cinema ➔ Room: ${roomName}`;
+            document.getElementById("room-title-display").innerText = `Room ➔ ${roomName}`;
         });
 
         socket.on('join success', (data) => {
@@ -254,7 +368,15 @@
             }
         });
 
-        // الشات
+        // نظام إرسال الإيموجي السريع
+        function sendQuickEmoji(emoji) {
+            socket.emit("chat message", emoji);
+            const area = document.getElementById("chat-messages");
+            area.innerHTML += `<div class="msg-line msg-mine"><div class="msg-bubble" style="font-size: 22px;">${emoji}</div></div>`;
+            area.scrollTop = area.scrollHeight;
+        }
+
+        // الشات العادي
         document.getElementById("send-chat-btn").addEventListener("click", sendChatMessage);
         document.getElementById("chat-input").addEventListener("keypress", (e) => {
             if(e.key === 'Enter') sendChatMessage();
@@ -278,8 +400,11 @@
 
         socket.on("chat message", (data) => {
             const area = document.getElementById("chat-messages");
-            area.innerHTML += `<div class="msg-line msg-friend"><div class="msg-bubble"><strong>${data.username}</strong>${data.text}</div></div>`;
+            const isEmoji = data.text.length <= 2 && /\p{Emoji}/u.test(data.text);
+            const bubbleStyle = isEmoji ? 'style="font-size: 22px;"' : '';
+            area.innerHTML += `<div class="msg-line msg-friend"><div class="msg-bubble" ${bubbleStyle}><strong>${data.username}</strong>${data.text}</div></div>`;
             area.scrollTop = area.scrollHeight;
+            playPingSound(); // تشغيل تنبيه صوتي عند تلقي رسالة من الأصدقاء
         });
 
         socket.on("system notification", (data) => {

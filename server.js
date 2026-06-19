@@ -84,7 +84,6 @@ io.on('connection', (socket) => {
     });
 });
 
-// هذا السطر مهم جداً للرفع على السيرفرات الخارجية مثل Render
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`🚀 RAFA Server running on port ${PORT}`);
