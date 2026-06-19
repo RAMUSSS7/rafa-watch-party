@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAFA - Ultimate Watch Party</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #060913 0%, #110a24 100%);
+            --card-bg: rgba(20, 26, 46, 0.6);
+            --border-color: #2c254e;
+            --primary-purple: #8a2be2;
+            --neon-blue: #00d2ff;
+            --text-color: #ffffff;
+            --text-muted: #a5a9b8;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 25px; }
+        .hidden { display: none !important; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        input { width: 100%; padding: 14px; margin-bottom: 18px; background: #121624; border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 15px; transition: 0.3s; }
+        input:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+        
+        .btn-primary { width: 100%; padding: 15px; background: linear-gradient(to right, var(--primary-purple), #a04ef6); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6); }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .cinema-layout { display: flex; flex-direction: column; gap: 20px; }
+        .video-block { position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden; min-height: 450px; }
+        video, #youtube-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
+
+        .sync-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: rgba(6, 9, 19, 0.9); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; border-radius: 12px; }
+        .sync-btn { background: var(--primary-purple); color: white; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; box-shadow: 0 0 20px var(--primary-purple); }
+
+        .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .user-badge { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--primary-purple); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block; margin-right: 5px; }
+
+        .chat-box { display: flex; flex-direction: column; height: 380px; }
+        .messages-area { flex: 1; overflow-y: auto; padding: 15px; font-size: 15px; background: rgba(10, 14, 28, 0.4); border-radius: 8px; margin-bottom: 12px; border: 1px solid #1c2136; }
+        
+        .msg-line { margin-bottom: 10px; line-height: 1.4; clear: both; }
+        .msg-bubble { display: inline-block; padding: 8px 14px; border-radius: 12px; }
+        .msg-mine .msg-bubble { background: linear-gradient(135deg, #5a189a, #7b2cbf); color: white; float: right; }
+        .msg-friend .msg-bubble { background: #161b33; border: 1px solid var(--border-color); float: left; }
+        .msg-friend strong { color: var(--neon-blue); display: block; font-size: 12px; margin-bottom: 3px; }
+        .msg-system { text-align: center; margin: 12px 0; }
+        .msg-system span { background: linear-gradient(90deg, rgba(6,9,19,0.8), rgba(28,10,36,0.8)); border: 1px solid #3c1e6d; padding: 6px 16px; border-radius: 30px; font-size: 13px; color: #b8b1ff; }
+
+        .typing-indicator { font-size: 12px; color: var(--text-muted); height: 18px; margin-bottom: 5px; }
+        .chat-input-group { display: flex; gap: 8px; }
+        .chat-input-group input { flex: 1; margin: 0; }
+        .chat-input-group button { padding: 0 25px; background: var(--primary-purple); border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="lobby-container" class="card">
+            <h1 style="text-align: center; margin-bottom: 30px; font-size: 36px;">RAFA WATCH PARTY</h1>
+            
+            <label style="font-weight: bold; display:block; margin-bottom: 8px;">1. Profile Name</label>
+            <input type="text" id="username-input" placeholder="Enter your display name...">
+
+            <label style="font-weight: bold; display:block; margin-bottom: 8px;">2. Room Credentials</label>
+            <div class="form-grid">
+                <input type="text" id="room-input" placeholder="Create or Enter Room Name...">
+                <input type="password" id="password-input" placeholder="Enter Room Password...">
+            </div>
+
+            <label style="font-weight: bold; display:block; margin-bottom: 8px;">3. Video URL (Supports Direct .mp4 OR YouTube links 🎬)</label>
+            <input type="text" id="video-url-input" value="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" placeholder="Paste direct movie link or YouTube URL here...">
+
+            <button id="join-btn" class="btn-primary" style="margin-top: 10px;">Connect & Launch Theater Room 🍿</button>
+        </div>
+
+        <div id="cinema-container" class="hidden">
+            <div class="room-header card" style="padding: 15px 20px; margin-bottom: 15px;">
+                <div><h2 id="room-title-display" style="margin: 0; font-size: 20px;">Room: None</h2></div>
+                <div id="online-users-container"></div>
+            </div>
+
+            <div class="card" style="padding: 15px; margin-bottom: 15px;">
+                <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube or MP4 link here and press Enter to switch the movie for everyone!" style="margin: 0;">
+            </div>
+
+            <div class="cinema-layout">
+                <div class="video-block card">
+                    <div id="syncOverlay" class="sync-overlay">
+                        <button class="sync-btn">▶ CLICK TO START & SYNC CINEMA</button>
+                    </div>
+                    
+                    <video id="video-player" controls></video>
+                    <div id="youtube-player" class="hidden"></div>
+                </div>
+
+                <div class="chat-box card">
+                    <h3>💬 Live Chat</h3>
+                    <div id="chat-messages" class="messages-area"></div>
+                    <div id="typing-box" class="typing-indicator"></div>
+                    <div class="chat-input-group">
+                        <input type="text" id="chat-input" placeholder="Type a message...">
+                        <button id="send-chat-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let myName = "";
+        let typingTimeout = null;
+        let isYouTube = false;
+        let ytPlayer = null;
+        let initialVideoUrl = "";
+        const vp = document.getElementById("video-player");
+        const ytd = document.getElementById("youtube-player");
+
+        function getYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function initYouTubeEngine(ytId) {
+            isYouTube = true;
+            vp.classList.add("hidden");
+            ytd.classList.remove("hidden");
+            vp.pause();
+
+            if (window.YT && window.YT.Player) {
+                if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                    ytPlayer.loadVideoById(ytId);
+                } else {
+                    ytd.innerHTML = "";
+                    ytPlayer = new YT.Player('youtube-player', {
+                        height: '450',
+                        width: '100%',
+                        videoId: ytId,
+                        playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0 },
+                        events: { 'onStateChange': onPlayerStateChange }
+                    });
+                }
+            } else {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                const firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                
+                window.onYouTubeIframeAPIReady = function() {
+                    ytPlayer = new YT.Player('youtube-player', {
+                        height: '450',
+                        width: '100%',
+                        videoId: ytId,
+                        playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0 },
+                        events: { 'onStateChange': onPlayerStateChange }
+                    });
+                };
+            }
+        }
+
+        function loadVideoSource(url) {
+            const ytId = getYouTubeId(url);
+            if (ytId) {
+                initYouTubeEngine(ytId);
+            } else {
+                isYouTube = false;
+                ytd.classList.add("hidden");
+                vp.classList.remove("hidden");
+                if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+                vp.src = url;
+                vp.load();
+            }
+        }
+
+        document.getElementById("join-btn").addEventListener("click", () => {
+            myName = document.getElementById("username-input").value.trim();
+            const roomName = document.getElementById("room-input").value.trim();
+            const roomPassword = document.getElementById("password-input").value.trim();
+            initialVideoUrl = document.getElementById("video-url-input").value.trim();
+
+            if(!myName || !roomName || !roomPassword) return alert("Please fill Username, Room Name, and Password!");
+
+            socket.emit("join room", { username: myName, room: roomName, password: roomPassword, videoUrl: initialVideoUrl });
+            document.getElementById("room-title-display").innerText = `RAFA Cinema ➔ Room: ${roomName}`;
+        });
+
+        socket.on('join success', (data) => {
+            document.getElementById("lobby-container").classList.add("hidden");
+            document.getElementById("cinema-container").classList.remove("hidden");
+            const urlToLoad = data.videoUrl || initialVideoUrl;
+            if(urlToLoad) loadVideoSource(urlToLoad);
+        });
+
+        socket.on('join error', (errorMsg) => alert(errorMsg));
+
+        document.getElementById("inline-video-switcher").addEventListener("keypress", (e) => {
+            if (e.key === 'Enter') {
+                const newUrl = e.target.value.trim();
+                if (newUrl) {
+                    socket.emit('video action', { type: 'change_src', url: newUrl });
+                    loadVideoSource(newUrl);
+                    e.target.value = "";
+                }
+            }
+        });
+
+        document.getElementById("syncOverlay").addEventListener("click", () => {
+            document.getElementById("syncOverlay").style.display = "none";
+            if(!isYouTube) vp.play().catch(() => { vp.muted = true; vp.play(); });
+            else if(ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+        });
+
+        let blockSyncEmit = false;
+
+        vp.addEventListener('play', () => { if (!blockSyncEmit && !isYouTube) socket.emit('video action', { type: 'play', time: vp.currentTime }); blockSyncEmit = false; });
+        vp.addEventListener('pause', () => { if (!blockSyncEmit && !isYouTube) socket.emit('video action', { type: 'pause', time: vp.currentTime }); blockSyncEmit = false; });
+        vp.addEventListener('seeked', () => { if (!blockSyncEmit && !isYouTube) socket.emit('video action', { type: 'seek', time: vp.currentTime }); blockSyncEmit = false; });
+
+        function onPlayerStateChange(event) {
+            if (blockSyncEmit || !isYouTube) { blockSyncEmit = false; return; }
+            const time = ytPlayer.getCurrentTime();
+            if (event.data == YT.PlayerState.PLAYING) {
+                socket.emit('video action', { type: 'play', time: time });
+            } else if (event.data == YT.PlayerState.PAUSED) {
+                socket.emit('video action', { type: 'pause', time: time });
+            }
+        }
+
+        socket.on('video action', (data) => {
+            blockSyncEmit = true; 
+            if (data.type === 'change_src') {
+                loadVideoSource(data.url);
+                return;
+            }
+
+            if (!isYouTube) {
+                if(data.type === 'play') { vp.currentTime = data.time; vp.play(); }
+                else if(data.type === 'pause') { vp.currentTime = data.time; vp.pause(); }
+                else if(data.type === 'seek') { vp.currentTime = data.time; }
+            } else if (isYouTube && ytPlayer && typeof ytPlayer.seekTo === 'function') {
+                if(data.type === 'play') { ytPlayer.seekTo(data.time, true); ytPlayer.playVideo(); }
+                else if(data.type === 'pause') { ytPlayer.seekTo(data.time, true); ytPlayer.pauseVideo(); }
+                else if(data.type === 'seek') { ytPlayer.seekTo(data.time, true); }
+            }
+        });
+
+        // الشات
+        document.getElementById("send-chat-btn").addEventListener("click", sendChatMessage);
+        document.getElementById("chat-input").addEventListener("keypress", (e) => {
+            if(e.key === 'Enter') sendChatMessage();
+            socket.emit('typing', true);
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => { socket.emit('typing', false); }, 2000);
+        });
+
+        function sendChatMessage() {
+            const input = document.getElementById("chat-input");
+            const text = input.value.trim();
+            if(!text) return;
+
+            socket.emit("chat message", text);
+            const area = document.getElementById("chat-messages");
+            area.innerHTML += `<div class="msg-line msg-mine"><div class="msg-bubble">${text}</div></div>`;
+            area.scrollTop = area.scrollHeight;
+            input.value = "";
+            socket.emit('typing', false);
+        }
+
+        socket.on("chat message", (data) => {
+            const area = document.getElementById("chat-messages");
+            area.innerHTML += `<div class="msg-line msg-friend"><div class="msg-bubble"><strong>${data.username}</strong>${data.text}</div></div>`;
+            area.scrollTop = area.scrollHeight;
+        });
+
+        socket.on("system notification", (data) => {
+            const area = document.getElementById("chat-messages");
+            area.innerHTML += `<div class="msg-system"><span>${data.text}</span></div>`;
+            area.scrollTop = area.scrollHeight;
+        });
+
+        socket.on("typing", (data) => {
+            document.getElementById("typing-box").innerText = data.isTyping ? `✍️ ${data.username} is typing...` : '';
+        });
+
+        socket.on("update users", (userList) => {
+            const uBox = document.getElementById("online-users-container");
+            uBox.innerHTML = "";
+            userList.forEach(user => { uBox.innerHTML += `<div class="user-badge">🟢 ${user.username}</div>`; });
+        });
+    </script>
+</body>
+</html>
