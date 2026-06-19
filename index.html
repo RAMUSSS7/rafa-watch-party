@@ -21,7 +21,7 @@
         .hidden { display: none !important; }
         .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: all 0.3s ease; }
         
-        h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         input { width: 100%; padding: 14px; margin-bottom: 18px; background: #121624; border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 15px; transition: 0.3s; }
         input:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
@@ -40,7 +40,7 @@
         @media (max-width: 850px) { .cinema-layout { grid-template-columns: 1fr; } }
 
         .video-block { position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden; min-height: 450px; }
-        video, #youtube-player, #twitch-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
+        #youtube-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
 
         .sync-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: rgba(6, 9, 19, 0.9); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; border-radius: 12px; }
         .sync-btn { background: var(--primary-purple); color: white; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; box-shadow: 0 0 20px var(--primary-purple); }
@@ -99,17 +99,14 @@
         }
         .platform-badge img { width: 16px; height: 16px; object-fit: contain; }
         .platform-badge.yt:hover { border-color: #ff0000; color: white; box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); background: rgba(255, 0, 0, 0.1); }
-        .platform-badge.tw:hover { border-color: #9146ff; color: white; box-shadow: 0 0 10px rgba(145, 70, 255, 0.4); background: rgba(145, 70, 255, 0.1); }
-        .platform-badge.nf:hover { border-color: #e50914; color: white; box-shadow: 0 0 10px rgba(229, 9, 20, 0.4); background: rgba(229, 9, 20, 0.1); }
-        .platform-badge.mp4:hover { border-color: var(--neon-blue); color: white; box-shadow: 0 0 10px rgba(0, 210, 255, 0.4); background: rgba(0, 210, 255, 0.1); }
     </style>
-    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 </head>
 <body>
 
     <button class="exit-cinema-btn" id="exit-cinema-floating-btn">❌ Close Cinema Mode</button>
 
     <div class="container">
+        <!-- 1. LOBBY CONTAINER -->
         <div id="lobby-container" class="card">
             <h1 style="text-align: center; margin-bottom: 30px; font-size: 36px;">RAFA WATCH PARTY</h1>
             
@@ -126,26 +123,18 @@
             </div>
 
             <label style="font-weight: bold; display:block; margin-bottom: 8px;">3. Video URL</label>
-            <input type="text" id="video-url-input" value="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" placeholder="Paste direct movie link, YouTube, or Twitch URL here...">
+            <input type="text" id="video-url-input" value="" placeholder="Enter YouTube video link here...">
 
             <div class="platforms-bar">
                 <div class="platform-badge yt">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_icon_with_only_the_play_button_%282023-2024%29.svg" alt="YouTube"> YouTube
-                </div>
-                <div class="platform-badge tw">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Twitch_Glitch_Logo_Purple.svg" alt="Twitch"> Twitch
-                </div>
-                <div class="platform-badge nf">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Netflix_2015_N_logo.svg" alt="Netflix"> Netflix Info
-                </div>
-                <div class="platform-badge mp4">
-                    🎬 Direct MP4 / Movies
                 </div>
             </div>
 
             <button id="join-btn" class="btn-primary" style="margin-top: 10px;">Connect & Launch Theater Room 🍿</button>
         </div>
 
+        <!-- 2. CINEMA CONTAINER -->
         <div id="cinema-container" class="hidden">
             <div class="room-header card" style="padding: 15px 20px; margin-bottom: 15px;">
                 <div><h2 id="room-title-display" style="margin: 0; font-size: 20px;">Room: None</h2></div>
@@ -154,18 +143,12 @@
 
             <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
                 <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
-                    <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube, Twitch, or MP4 link here and press Enter to switch..." style="margin: 0; flex: 1;">
+                    <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube link here and press Enter to switch..." style="margin: 0; flex: 1;">
                     <button class="btn-secondary" id="cinema-toggle-btn">🎬 Cinema Mode</button>
                 </div>
                 <div class="platforms-bar" style="margin: 0; padding-left: 5px;">
                     <div class="platform-badge yt">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_icon_with_only_the_play_button_%282023-2024%29.svg" alt="YouTube"> YouTube Supported
-                    </div>
-                    <div class="platform-badge tw">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Twitch_Glitch_Logo_Purple.svg" alt="Twitch"> Twitch Streams Live
-                    </div>
-                    <div class="platform-badge mp4">
-                        🎬 Direct Movies / Links
                     </div>
                 </div>
             </div>
@@ -175,10 +158,7 @@
                     <div id="syncOverlay" class="sync-overlay">
                         <button class="sync-btn">▶ CLICK TO START & SYNC CINEMA</button>
                     </div>
-                    
-                    <video id="video-player" controls></video>
                     <div id="youtube-player" class="hidden"></div>
-                    <div id="twitch-player" class="hidden"></div>
                 </div>
 
                 <div class="chat-box card" id="main-chat-card" style="margin-bottom: 0;">
@@ -211,20 +191,23 @@
         </div>
     </div>
 
+    <!-- كود الـ JavaScript الخاص بالـ Frontend للمتصفح -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // إعداد إدارة التاريخ للمتصفح (السماح بالتراجع للـ Lobby بضغطة زر الرجوع)
+        if (location.hash === "" || location.hash === "#room") {
+            history.replaceState({ inRoom: false }, "", "#");
+        }
+
         const socket = io();
         let myName = "";
         let typingTimeout = null;
-        let currentEngine = "native"; 
+        let currentEngine = "youtube"; 
         let ytPlayer = null;
-        let twitchPlayer = null;
         let initialVideoUrl = "";
         let blockSyncEmit = false;
         
-        const vp = document.getElementById("video-player");
         const ytd = document.getElementById("youtube-player");
-        const twd = document.getElementById("twitch-player");
         const chatCard = document.getElementById("main-chat-card");
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -240,7 +223,7 @@
                 gain.connect(audioCtx.destination);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.15);
-            } catch(e) { console.log("Audio context entry block"); }
+            } catch(e) { console.log("Audio Context Blocked until Interaction"); }
         }
 
         document.getElementById("chat-opacity-slider").addEventListener("input", (e) => {
@@ -278,16 +261,8 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        function getTwitchChannel(url) {
-            const match = url.match(/(?:twitch\.tv\/)([a-zA-Z0-9_]{4,25})/);
-            return match ? match[1] : null;
-        }
-
         function hideAllPlayers() {
-            vp.classList.add("hidden");
             ytd.classList.add("hidden");
-            twd.classList.add("hidden");
-            vp.pause();
             if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
         }
 
@@ -327,35 +302,12 @@
             }
         }
 
-        function initTwitchEngine(channelName) {
-            hideAllPlayers();
-            currentEngine = "twitch";
-            twd.classList.remove("hidden");
-            twd.innerHTML = "";
-
-            twitchPlayer = new Twitch.Player("twitch-player", {
-                channel: channelName,
-                width: "100%",
-                height: "450",
-                autoplay: true,
-                parent: [window.location.hostname]
-            });
-        }
-
         function loadVideoSource(url) {
             const ytId = getYouTubeId(url);
-            const twitchChannel = getTwitchChannel(url);
-
             if (ytId) {
                 initYouTubeEngine(ytId);
-            } else if (twitchChannel) {
-                initTwitchEngine(twitchChannel);
             } else {
-                hideAllPlayers();
-                currentEngine = "native";
-                vp.classList.remove("hidden");
-                vp.src = url;
-                vp.load();
+                alert("Unsupported link! Please provide a valid YouTube URL.");
             }
         }
 
@@ -374,11 +326,26 @@
         socket.on('join success', (data) => {
             document.getElementById("lobby-container").classList.add("hidden");
             document.getElementById("cinema-container").classList.remove("hidden");
+            
+            if (location.hash !== "#room") {
+                history.pushState({ inRoom: true }, "", "#room");
+            }
+
             const urlToLoad = data.videoUrl || initialVideoUrl;
             if(urlToLoad) loadVideoSource(urlToLoad);
         });
 
         socket.on('join error', (errorMsg) => alert(errorMsg));
+
+        window.addEventListener('popstate', (event) => {
+            document.getElementById("cinema-container").classList.add("hidden");
+            document.getElementById("lobby-container").classList.remove("hidden");
+            
+            if (document.body.classList.contains("cinema-mode-active")) {
+                toggleCinemaMode(true);
+            }
+            hideAllPlayers();
+        });
 
         document.getElementById("inline-video-switcher").addEventListener("keypress", (e) => {
             if (e.key === 'Enter') {
@@ -393,14 +360,8 @@
 
         document.getElementById("syncOverlay").addEventListener("click", () => {
             document.getElementById("syncOverlay").style.display = "none";
-            if(currentEngine === "native") vp.play().catch(() => { vp.muted = true; vp.play(); });
-            else if(currentEngine === "youtube" && ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
-            else if(currentEngine === "twitch" && twitchPlayer) twitchPlayer.play();
+            if(currentEngine === "youtube" && ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
         });
-
-        vp.addEventListener('play', () => { if (!blockSyncEmit && currentEngine === "native") socket.emit('video action', { type: 'play', time: vp.currentTime }); blockSyncEmit = false; });
-        vp.addEventListener('pause', () => { if (!blockSyncEmit && currentEngine === "native") socket.emit('video action', { type: 'pause', time: vp.currentTime }); blockSyncEmit = false; });
-        vp.addEventListener('seeked', () => { if (!blockSyncEmit && currentEngine === "native") socket.emit('video action', { type: 'seek', time: vp.currentTime }); blockSyncEmit = false; });
 
         function onPlayerStateChange(event) {
             if (blockSyncEmit || currentEngine !== "youtube" || !ytPlayer) { blockSyncEmit = false; return; }
@@ -419,11 +380,7 @@
                 return;
             }
 
-            if (currentEngine === "native") {
-                if(data.type === 'play') { vp.currentTime = data.time; vp.play(); }
-                else if(data.type === 'pause') { vp.currentTime = data.time; vp.pause(); }
-                else if(data.type === 'seek') { vp.currentTime = data.time; }
-            } else if (currentEngine === "youtube" && ytPlayer && typeof ytPlayer.seekTo === 'function') {
+            if (currentEngine === "youtube" && ytPlayer && typeof ytPlayer.seekTo === 'function') {
                 if(data.type === 'play') { ytPlayer.seekTo(data.time, true); ytPlayer.playVideo(); }
                 else if(data.type === 'pause') { ytPlayer.seekTo(data.time, true); ytPlayer.pauseVideo(); }
                 else if(data.type === 'seek') { ytPlayer.seekTo(data.time, true); }
