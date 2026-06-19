@@ -40,7 +40,7 @@
         @media (max-width: 850px) { .cinema-layout { grid-template-columns: 1fr; } }
 
         .video-block { position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden; min-height: 450px; }
-        video, #youtube-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
+        video, #youtube-player, #twitch-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
 
         .sync-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: rgba(6, 9, 19, 0.9); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; border-radius: 12px; }
         .sync-btn { background: var(--primary-purple); color: white; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; box-shadow: 0 0 20px var(--primary-purple); }
@@ -68,11 +68,9 @@
         .emoji-btn { background: none; border: none; font-size: 20px; cursor: pointer; transition: transform 0.2s; padding: 2px; }
         .emoji-btn:hover { transform: scale(1.3); }
 
-        /* الأداة الجديدة: شريط التحكم بالشفافية */
         .opacity-control { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
         .opacity-control input { margin: 0; width: 80px; padding: 0; height: 5px; }
 
-        /* زر الخروج العائم الفاخر للسينما مود */
         .exit-cinema-btn {
             position: fixed; top: 20px; left: 20px; z-index: 9999;
             background: linear-gradient(135deg, #ff0055, #990033);
@@ -83,7 +81,6 @@
         }
         .exit-cinema-btn:hover { transform: scale(1.1); }
 
-        /* إعدادات وضع السينما المفعل */
         body.cinema-mode-active { background: #020205; }
         body.cinema-mode-active .container { max-width: 100%; padding: 10px; }
         body.cinema-mode-active .room-header, 
@@ -91,15 +88,28 @@
         body.cinema-mode-active .cinema-layout { grid-template-columns: 3fr 1fr; gap: 15px; }
         body.cinema-mode-active .video-block, body.cinema-mode-active .chat-box { background: rgba(5, 5, 10, 0.9); border-color: #110f1c; }
         body.cinema-mode-active .exit-cinema-btn { display: block !important; }
+
+        .platforms-bar {
+            display: flex; gap: 12px; align-items: center; margin-top: -10px; margin-bottom: 15px; padding: 5px; flex-wrap: wrap;
+        }
+        .platform-badge {
+            display: flex; align-items: center; gap: 8px; background: rgba(30, 35, 59, 0.6);
+            border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 500; color: var(--text-muted); transition: all 0.3s;
+        }
+        .platform-badge img { width: 16px; height: 16px; object-fit: contain; }
+        .platform-badge.yt:hover { border-color: #ff0000; color: white; box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); background: rgba(255, 0, 0, 0.1); }
+        .platform-badge.tw:hover { border-color: #9146ff; color: white; box-shadow: 0 0 10px rgba(145, 70, 255, 0.4); background: rgba(145, 70, 255, 0.1); }
+        .platform-badge.nf:hover { border-color: #e50914; color: white; box-shadow: 0 0 10px rgba(229, 9, 20, 0.4); background: rgba(229, 9, 20, 0.1); }
+        .platform-badge.mp4:hover { border-color: var(--neon-blue); color: white; box-shadow: 0 0 10px rgba(0, 210, 255, 0.4); background: rgba(0, 210, 255, 0.1); }
     </style>
+    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 </head>
 <body>
 
-    <!-- زر الخروج العائم من وضع السينما -->
     <button class="exit-cinema-btn" id="exit-cinema-floating-btn">❌ Close Cinema Mode</button>
 
     <div class="container">
-        <!-- ================= LOBBY INTERFACE ================= -->
         <div id="lobby-container" class="card">
             <h1 style="text-align: center; margin-bottom: 30px; font-size: 36px;">RAFA WATCH PARTY</h1>
             
@@ -115,26 +125,52 @@
                 <input type="password" id="password-input" placeholder="Enter Room Password...">
             </div>
 
-            <label style="font-weight: bold; display:block; margin-bottom: 8px;">3. Video URL (Supports Direct .mp4 OR YouTube links 🎬)</label>
-            <input type="text" id="video-url-input" value="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" placeholder="Paste direct movie link or YouTube URL here...">
+            <label style="font-weight: bold; display:block; margin-bottom: 8px;">3. Video URL</label>
+            <input type="text" id="video-url-input" value="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" placeholder="Paste direct movie link, YouTube, or Twitch URL here...">
+
+            <div class="platforms-bar">
+                <div class="platform-badge yt">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_icon_with_only_the_play_button_%282023-2024%29.svg" alt="YouTube"> YouTube
+                </div>
+                <div class="platform-badge tw">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Twitch_Glitch_Logo_Purple.svg" alt="Twitch"> Twitch
+                </div>
+                <div class="platform-badge nf">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Netflix_2015_N_logo.svg" alt="Netflix"> Netflix Info
+                </div>
+                <div class="platform-badge mp4">
+                    🎬 Direct MP4 / Movies
+                </div>
+            </div>
 
             <button id="join-btn" class="btn-primary" style="margin-top: 10px;">Connect & Launch Theater Room 🍿</button>
         </div>
 
-        <!-- ================= INSIDE THEATER ================= -->
         <div id="cinema-container" class="hidden">
             <div class="room-header card" style="padding: 15px 20px; margin-bottom: 15px;">
                 <div><h2 id="room-title-display" style="margin: 0; font-size: 20px;">Room: None</h2></div>
                 <div id="online-users-container"></div>
             </div>
 
-            <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube or MP4 link here and press Enter to switch..." style="margin: 0; flex: 1;">
-                <button class="btn-secondary" id="cinema-toggle-btn" style="white-space: nowrap;">🎬 Cinema Mode</button>
+            <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                    <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube, Twitch, or MP4 link here and press Enter to switch..." style="margin: 0; flex: 1;">
+                    <button class="btn-secondary" id="cinema-toggle-btn">🎬 Cinema Mode</button>
+                </div>
+                <div class="platforms-bar" style="margin: 0; padding-left: 5px;">
+                    <div class="platform-badge yt">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_icon_with_only_the_play_button_%282023-2024%29.svg" alt="YouTube"> YouTube Supported
+                    </div>
+                    <div class="platform-badge tw">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Twitch_Glitch_Logo_Purple.svg" alt="Twitch"> Twitch Streams Live
+                    </div>
+                    <div class="platform-badge mp4">
+                        🎬 Direct Movies / Links
+                    </div>
+                </div>
             </div>
 
             <div class="cinema-layout">
-                <!-- Video Block -->
                 <div class="video-block card" style="margin-bottom: 0;">
                     <div id="syncOverlay" class="sync-overlay">
                         <button class="sync-btn">▶ CLICK TO START & SYNC CINEMA</button>
@@ -142,13 +178,12 @@
                     
                     <video id="video-player" controls></video>
                     <div id="youtube-player" class="hidden"></div>
+                    <div id="twitch-player" class="hidden"></div>
                 </div>
 
-                <!-- Chat Block -->
                 <div class="chat-box card" id="main-chat-card" style="margin-bottom: 0;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                         <h3 style="margin: 0;">💬 Live Chat</h3>
-                        <!-- أداة التحكم بالشفافية مدمجة بشكل أنيق -->
                         <div class="opacity-control">
                             <span>Opacity:</span>
                             <input type="range" id="chat-opacity-slider" min="20" max="100" value="100">
@@ -157,7 +192,6 @@
                     
                     <div id="chat-messages" class="messages-area"></div>
                     
-                    <!-- Quick Emoji Bar -->
                     <div class="emoji-bar">
                         <button class="emoji-btn" onclick="sendQuickEmoji('😂')">😂</button>
                         <button class="emoji-btn" onclick="sendQuickEmoji('😮')">😮</button>
@@ -182,36 +216,37 @@
         const socket = io();
         let myName = "";
         let typingTimeout = null;
-        let isYouTube = false;
+        let currentEngine = "native"; 
         let ytPlayer = null;
+        let twitchPlayer = null;
         let initialVideoUrl = "";
+        let blockSyncEmit = false;
+        
         const vp = document.getElementById("video-player");
         const ytd = document.getElementById("youtube-player");
+        const twd = document.getElementById("twitch-player");
         const chatCard = document.getElementById("main-chat-card");
 
-        // كود تشغيل تنبيه صوتي خفيف مدمج برمجياً بدون ملفات خارجية
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playPingSound() {
             try {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = "sine";
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // نغمة D5 ناعمة
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.15);
-            } catch(e) { console.log("Audio not allowed yet"); }
+            } catch(e) { console.log("Audio context entry block"); }
         }
 
-        // منزلق التحكم بشفافية الشات لراحة العينين
         document.getElementById("chat-opacity-slider").addEventListener("input", (e) => {
             chatCard.style.opacity = e.target.value / 100;
         });
 
-        // دالة التحكم بتشغيل وإلغاء وضع السينما
         function toggleCinemaMode(forceClose = false) {
             if (forceClose) {
                 document.body.classList.remove("cinema-mode-active");
@@ -229,11 +264,9 @@
             }
         }
 
-        // ربط أزرار السينما (الرئيسي والعائم الجديد)
         document.getElementById("cinema-toggle-btn").addEventListener("click", () => toggleCinemaMode());
         document.getElementById("exit-cinema-floating-btn").addEventListener("click", () => toggleCinemaMode(true));
 
-        // توليد غرفة عشوائية فريدة
         document.getElementById("rand-room-btn").addEventListener("click", () => {
             const randomName = "RAFA-" + Math.floor(1000 + Math.random() * 9000);
             document.getElementById("room-input").value = randomName;
@@ -245,11 +278,23 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        function initYouTubeEngine(ytId) {
-            isYouTube = true;
+        function getTwitchChannel(url) {
+            const match = url.match(/(?:twitch\.tv\/)([a-zA-Z0-9_]{4,25})/);
+            return match ? match[1] : null;
+        }
+
+        function hideAllPlayers() {
             vp.classList.add("hidden");
-            ytd.classList.remove("hidden");
+            ytd.classList.add("hidden");
+            twd.classList.add("hidden");
             vp.pause();
+            if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+        }
+
+        function initYouTubeEngine(ytId) {
+            hideAllPlayers();
+            currentEngine = "youtube";
+            ytd.classList.remove("hidden");
 
             if (window.YT && window.YT.Player) {
                 if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
@@ -282,15 +327,33 @@
             }
         }
 
+        function initTwitchEngine(channelName) {
+            hideAllPlayers();
+            currentEngine = "twitch";
+            twd.classList.remove("hidden");
+            twd.innerHTML = "";
+
+            twitchPlayer = new Twitch.Player("twitch-player", {
+                channel: channelName,
+                width: "100%",
+                height: "450",
+                autoplay: true,
+                parent: [window.location.hostname]
+            });
+        }
+
         function loadVideoSource(url) {
             const ytId = getYouTubeId(url);
+            const twitchChannel = getTwitchChannel(url);
+
             if (ytId) {
                 initYouTubeEngine(ytId);
+            } else if (twitchChannel) {
+                initTwitchEngine(twitchChannel);
             } else {
-                isYouTube = false;
-                ytd.classList.add("hidden");
+                hideAllPlayers();
+                currentEngine = "native";
                 vp.classList.remove("hidden");
-                if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
                 vp.src = url;
                 vp.load();
             }
@@ -330,18 +393,17 @@
 
         document.getElementById("syncOverlay").addEventListener("click", () => {
             document.getElementById("syncOverlay").style.display = "none";
-            if(!isYouTube) vp.play().catch(() => { vp.muted = true; vp.play(); });
-            else if(ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+            if(currentEngine === "native") vp.play().catch(() => { vp.muted = true; vp.play(); });
+            else if(currentEngine === "youtube" && ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+            else if(currentEngine === "twitch" && twitchPlayer) twitchPlayer.play();
         });
 
-        let blockSyncEmit = false;
-
-        vp.addEventListener('play', () => { if (!blockSyncEmit && !isYouTube) socket.emit('video action', { type: 'play', time: vp.currentTime }); blockSyncEmit = false; });
-        vp.addEventListener('pause', () => { if (!blockSyncEmit && !isYouTube) socket.emit('video action', { type: 'pause', time: vp.currentTime }); blockSyncEmit = false; });
-        vp.addEventListener('seeked', () => { if (!blockSyncEmit && !isYouTube) socket.emit('video action', { type: 'seek', time: vp.currentTime }); blockSyncEmit = false; });
+        vp.addEventListener('play', () => { if (!blockSyncEmit && currentEngine === "native") socket.emit('video action', { type: 'play', time: vp.currentTime }); blockSyncEmit = false; });
+        vp.addEventListener('pause', () => { if (!blockSyncEmit && currentEngine === "native") socket.emit('video action', { type: 'pause', time: vp.currentTime }); blockSyncEmit = false; });
+        vp.addEventListener('seeked', () => { if (!blockSyncEmit && currentEngine === "native") socket.emit('video action', { type: 'seek', time: vp.currentTime }); blockSyncEmit = false; });
 
         function onPlayerStateChange(event) {
-            if (blockSyncEmit || !isYouTube) { blockSyncEmit = false; return; }
+            if (blockSyncEmit || currentEngine !== "youtube" || !ytPlayer) { blockSyncEmit = false; return; }
             const time = ytPlayer.getCurrentTime();
             if (event.data == YT.PlayerState.PLAYING) {
                 socket.emit('video action', { type: 'play', time: time });
@@ -357,18 +419,17 @@
                 return;
             }
 
-            if (!isYouTube) {
+            if (currentEngine === "native") {
                 if(data.type === 'play') { vp.currentTime = data.time; vp.play(); }
                 else if(data.type === 'pause') { vp.currentTime = data.time; vp.pause(); }
                 else if(data.type === 'seek') { vp.currentTime = data.time; }
-            } else if (isYouTube && ytPlayer && typeof ytPlayer.seekTo === 'function') {
+            } else if (currentEngine === "youtube" && ytPlayer && typeof ytPlayer.seekTo === 'function') {
                 if(data.type === 'play') { ytPlayer.seekTo(data.time, true); ytPlayer.playVideo(); }
                 else if(data.type === 'pause') { ytPlayer.seekTo(data.time, true); ytPlayer.pauseVideo(); }
                 else if(data.type === 'seek') { ytPlayer.seekTo(data.time, true); }
             }
         });
 
-        // نظام إرسال الإيموجي السريع
         function sendQuickEmoji(emoji) {
             socket.emit("chat message", emoji);
             const area = document.getElementById("chat-messages");
@@ -376,7 +437,6 @@
             area.scrollTop = area.scrollHeight;
         }
 
-        // الشات العادي
         document.getElementById("send-chat-btn").addEventListener("click", sendChatMessage);
         document.getElementById("chat-input").addEventListener("keypress", (e) => {
             if(e.key === 'Enter') sendChatMessage();
@@ -404,7 +464,7 @@
             const bubbleStyle = isEmoji ? 'style="font-size: 22px;"' : '';
             area.innerHTML += `<div class="msg-line msg-friend"><div class="msg-bubble" ${bubbleStyle}><strong>${data.username}</strong>${data.text}</div></div>`;
             area.scrollTop = area.scrollHeight;
-            playPingSound(); // تشغيل تنبيه صوتي عند تلقي رسالة من الأصدقاء
+            playPingSound();
         });
 
         socket.on("system notification", (data) => {
