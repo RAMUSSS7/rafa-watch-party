@@ -20,7 +20,7 @@
         .hidden { display: none !important; }
         .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
+        h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
         
         input { width: 100%; padding: 14px; margin-bottom: 18px; background: #121624; border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 15px; }
         input:focus { border-color: var(--neon-blue); }
@@ -47,17 +47,20 @@
         .sync-btn { background: var(--primary-purple); color: white; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; }
 
         .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .user-badge { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--primary-purple); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block; margin-right: 5px; }
+        .user-badge { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--primary-purple); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; margin-right: 5px; }
+        .user-badge img { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
 
         .chat-box { display: flex; flex-direction: column; height: 450px; }
         .messages-area { flex: 1; overflow-y: auto; padding: 15px; font-size: 15px; background: rgba(10, 14, 28, 0.4); border-radius: 8px; margin-bottom: 12px; border: 1px solid #1c2136; }
         
-        .msg-line { margin-bottom: 10px; clear: both; }
+        .msg-line { margin-bottom: 10px; clear: both; display: flex; align-items: flex-start; gap: 8px; }
+        .msg-mine { flex-direction: row-reverse; }
         .msg-bubble { display: inline-block; padding: 8px 14px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
-        .msg-mine .msg-bubble { background: linear-gradient(135deg, #5a189a, #7b2cbf); color: white; float: right; }
-        .msg-friend .msg-bubble { background: #161b33; border: 1px solid var(--border-color); float: left; }
+        .msg-mine .msg-bubble { background: linear-gradient(135deg, #5a189a, #7b2cbf); color: white; }
+        .msg-friend .msg-bubble { background: #161b33; border: 1px solid var(--border-color); }
         .msg-friend strong { color: var(--neon-blue); display: block; font-size: 12px; margin-bottom: 3px; }
-        .msg-system { text-align: center; margin: 12px 0; }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary-purple); }
+        .msg-system { text-align: center; margin: 12px 0; display: block; width: 100%; }
         .msg-system span { background: rgba(6,9,19,0.8); border: 1px solid #3c1e6d; padding: 6px 16px; border-radius: 30px; font-size: 13px; color: #b8b1ff; }
 
         .typing-indicator { font-size: 12px; color: var(--text-muted); height: 18px; margin-bottom: 5px; }
@@ -95,7 +98,7 @@
 
         <div id="lobby-container" class="card hidden">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span id="user-welcome-tag" style="color: var(--neon-blue); font-weight: bold;">Welcome</span>
+                <span id="user-welcome-tag" style="color: var(--neon-blue); font-weight: bold; display: flex; align-items: center; gap: 8px;">Welcome</span>
                 <button id="logout-btn" class="btn-secondary" style="padding: 5px 10px; font-size: 12px;">Logout</button>
             </div>
             <h1 style="margin-bottom: 30px; font-size: 36px;">THEATER LOBBY</h1>
@@ -158,9 +161,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-       // إعدادات الفايربيس الصحيحة والمطابقة لمشروعك تماماً
         const firebaseConfig = {
             apiKey: "AIzaSyCCt7OGpMjDRCsRV5s201M03RtvPdPKTJY",
             authDomain: "rafa-watch-party.firebaseapp.com",
@@ -170,36 +172,71 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://w
             appId: "1:176872311795:web:313f83c36e1a6ccb9de086",
             measurementId: "G-93T6DBE1E2"
         };
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const socket = io();
         
         let myName = "";
+        let myPhoto = "";
         let isGuest = true;
         let ytPlayer = null;
         let blockSyncEmit = false;
         let typingTimeout = null;
+        let isHost = false;
 
-        function handleLoginSuccess(name, guestStatus) {
-            myName = name;
-            isGuest = guestStatus;
-            document.getElementById("user-welcome-tag").innerText = `Logged in as: ${myName} ${isGuest ? '(Guest)' : '⭐'}`;
+        // Centralized History Navigation Engine
+        function navigateTo(screenId) {
             document.getElementById("auth-container").classList.add("hidden");
-            document.getElementById("lobby-container").classList.remove("hidden");
+            document.getElementById("lobby-container").classList.add("hidden");
+            document.getElementById("cinema-container").classList.add("hidden");
+
+            document.getElementById(screenId).classList.remove("hidden");
+            history.pushState({ currentScreen: screenId }, "", `#${screenId}`);
         }
 
-        // كود تشغيل زر جوجل
+        // Handle Browser Back and Forward Navigation Events
+        window.addEventListener("popstate", (event) => {
+            document.getElementById("auth-container").classList.add("hidden");
+            document.getElementById("lobby-container").classList.add("hidden");
+            document.getElementById("cinema-container").classList.add("hidden");
+
+            if (event.state && event.state.currentScreen) {
+                document.getElementById(event.state.currentScreen).classList.remove("hidden");
+            } else {
+                document.getElementById("auth-container").classList.remove("hidden");
+            }
+        });
+
+        // Seed initial history state upon initialization
+        history.replaceState({ currentScreen: "auth-container" }, "", "");
+
+        function handleLoginSuccess(name, photoUrl, guestStatus) {
+            myName = name;
+            myPhoto = photoUrl || "";
+            isGuest = guestStatus;
+            
+            const welcomeTag = document.getElementById("user-welcome-tag");
+            if (myPhoto) {
+                welcomeTag.innerHTML = `<img src="${myPhoto}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;"> Logged in as: ${myName} ⭐`;
+            } else {
+                welcomeTag.innerText = `Logged in as: ${myName} (Guest) 👤`;
+            }
+            
+            navigateTo("lobby-container");
+        }
+
         document.getElementById("google-login-btn").addEventListener("click", () => {
             signInWithPopup(auth, provider).then((result) => {
-                handleLoginSuccess(result.user.displayName, false);
+                handleLoginSuccess(result.user.displayName, result.user.photoURL, false);
             }).catch((error) => { alert("Google Sign in Failed: " + error.message); });
         });
 
         document.getElementById("guest-login-btn").addEventListener("click", () => {
             const guestName = document.getElementById("guest-name-input").value.trim();
             if(!guestName) return alert("Please type a guest name!");
-            handleLoginSuccess(guestName + " (Guest)", true);
+            handleLoginSuccess(guestName, "", true);
         });
 
         document.getElementById("logout-btn").addEventListener("click", () => {
@@ -252,13 +289,13 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://w
 
             if(!roomName || !roomPassword) return alert("Please fill room credentials!");
 
-            socket.emit("join room", { username: myName, room: roomName, password: roomPassword, videoUrl: initialUrl });
+            socket.emit("join room", { username: myName, photo: myPhoto, room: roomName, password: roomPassword, videoUrl: initialUrl });
             document.getElementById("room-title-display").innerText = `Room ➔ ${roomName}`;
         });
 
         socket.on('join success', (data) => {
-            document.getElementById("lobby-container").classList.add("hidden");
-            document.getElementById("cinema-container").classList.remove("hidden");
+            isHost = data.isHost;
+            navigateTo("cinema-container");
             if(data.videoUrl) loadVideoSource(data.videoUrl);
         });
 
@@ -298,7 +335,9 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://w
 
         window.sendQuickEmoji = function(emoji) {
             socket.emit("chat message", emoji);
-            appendMsg("You", emoji, true);
+            appendMsg(myName, myPhoto, emoji, true);
+            const input = document.getElementById("chat-input");
+            input.value = "";
         }
 
         document.getElementById("emoji-1").addEventListener("click", () => sendQuickEmoji('😂'));
@@ -318,19 +357,28 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://w
             const input = document.getElementById("chat-input");
             if(!input.value.trim()) return;
             socket.emit("chat message", input.value.trim());
-            appendMsg("You", input.value.trim(), true);
+            appendMsg(myName, myPhoto, input.value.trim(), true);
             input.value = "";
             socket.emit('typing', false);
         }
 
-        function appendMsg(user, text, isMine) {
+        function appendMsg(user, photo, text, isMine) {
             const area = document.getElementById("chat-messages");
             const cls = isMine ? "msg-mine" : "msg-friend";
-            area.innerHTML += `<div class="msg-line ${cls}"><div class="msg-bubble">${isMine ? '' : '<strong>'+user+'</strong>'}${text}</div></div>`;
+            const avatarHtml = photo ? `<img src="${photo}" class="msg-avatar">` : `<div class="msg-avatar" style="background:#4a5568; display:inline-block;"></div>`;
+            
+            area.innerHTML += `
+                <div class="msg-line ${cls}">
+                    ${avatarHtml}
+                    <div class="msg-bubble">
+                        ${isMine ? '' : '<strong>'+user+'</strong>'}
+                        ${text}
+                    </div>
+                </div>`;
             area.scrollTop = area.scrollHeight;
         }
 
-        socket.on("chat message", (data) => appendMsg(data.username, data.text, false));
+        socket.on("chat message", (data) => appendMsg(data.username, data.photo, data.text, false));
         socket.on("system notification", (data) => {
             document.getElementById("chat-messages").innerHTML += `<div class="msg-system"><span>${data.text}</span></div>`;
         });
@@ -341,7 +389,11 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://w
 
         socket.on("update users", (users) => {
             const container = document.getElementById("online-users-container");
-            container.innerHTML = users.map(u => `<div class="user-badge">🟢 ${u.username}</div>`).join('');
+            container.innerHTML = users.map(u => {
+                const userPhotoHtml = u.photo ? `<img src="${u.photo}">` : '👤';
+                const hostCrown = u.isHost ? '👑 ' : '';
+                return `<div class="user-badge">${userPhotoHtml} ${hostCrown}${u.username}</div>`;
+            }).join('');
         });
 
         document.getElementById("cinema-toggle-btn").addEventListener("click", () => {
