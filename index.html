@@ -162,7 +162,6 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // تكوين مشروع الفايربيس (Firebase Configuration) الحقيقي والخاص بكِ مدمج هنا
         const firebaseConfig = {
             apiKey: "AIzaSyCCt70GpMjDRcSRV5s201M03RtvPdPKTJY",
             authDomain: "rafa-watch-party.firebaseapp.com",
@@ -172,7 +171,6 @@
             appId: "1:176872311795:web:313f83c36e1a6ccb9de086"
         };
         
-        // تفعيل الفايربيس بالبيانات المدخلة
         firebase.initializeApp(firebaseConfig);
         
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -185,7 +183,6 @@
         let blockSyncEmit = false;
         let typingTimeout = null;
 
-        // إدارة واجهة تسجيل الدخول
         function handleLoginSuccess(name, guestStatus) {
             myName = name;
             isGuest = guestStatus;
@@ -194,27 +191,23 @@
             document.getElementById("lobby-container").classList.remove("hidden");
         }
 
-        // تسجيل الدخول بواسطة جوجل
         document.getElementById("google-login-btn").addEventListener("click", () => {
             firebase.auth().signInWithPopup(provider).then((result) => {
                 handleLoginSuccess(result.user.displayName, false);
             }).catch((error) => { alert("Google Sign in Failed: " + error.message); });
         });
 
-        // الدخول كضيف
         document.getElementById("guest-login-btn").addEventListener("click", () => {
             const guestName = document.getElementById("guest-name-input").value.trim();
             if(!guestName) return alert("Please type a guest name!");
             handleLoginSuccess(guestName + " (Guest)", true);
         });
 
-        // تسجيل الخروج
         document.getElementById("logout-btn").addEventListener("click", () => {
             if(!isGuest) firebase.auth().signOut();
             location.reload();
         });
 
-        // إدارة الغرف واليوتيوب ومزامنتها
         document.getElementById("rand-room-btn").addEventListener("click", () => {
             document.getElementById("room-input").value = "RAFA-" + Math.floor(1000 + Math.random() * 9000);
         });
@@ -304,7 +297,6 @@
             if(ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
         });
 
-        // المحادثة (الدردشة) والـ Emojis
         function sendQuickEmoji(emoji) {
             socket.emit("chat message", emoji);
             appendMsg("You", emoji, true);
