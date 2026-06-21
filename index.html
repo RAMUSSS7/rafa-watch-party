@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RAFA - Ultimate Watch Party</title>
+    
     <link rel="icon" type="image/png" href="favicon.png?v=1">
+    
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #060913 0%, #110a24 100%);
@@ -15,35 +17,45 @@
             --text-color: #ffffff;
             --text-muted: #a5a9b8;
         }
+
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; }
         .container { max-width: 1100px; margin: 0 auto; padding: 25px; }
         .hidden { display: none !important; }
         .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
         h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
+        
         input { width: 100%; padding: 14px; margin-bottom: 18px; background: #121624; border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 15px; }
         input:focus { border-color: var(--neon-blue); }
+        
         .btn-primary { width: 100%; padding: 15px; background: linear-gradient(to right, var(--primary-purple), #a04ef6); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 10px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6); }
+
         .btn-google { width: 100%; padding: 15px; background: #ffffff; color: #000000; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-google:hover { background: #f1f1f1; }
+
         .btn-secondary { background: #1c183a; border: 1px solid var(--border-color); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .auth-box { max-width: 450px; margin: 100px auto; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .room-input-container { position: relative; width: 100%; }
         .gen-btn { position: absolute; right: 10px; top: 10px; background: var(--primary-purple); border: none; color: white; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        .cinema-layout { position: relative; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
 
+        .cinema-layout { position: relative; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         @media (max-width: 850px) { .cinema-layout { grid-template-columns: 1fr; } }
 
         .video-block { position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden; min-height: 450px; }
         #youtube-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
+
         .sync-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: rgba(6, 9, 19, 0.9); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; border-radius: 12px; }
         .sync-btn { background: var(--primary-purple); color: white; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; }
+
         .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .user-badge { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--primary-purple); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; margin-right: 5px; }
         .user-badge img { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
+
         .chat-box { display: flex; flex-direction: column; height: 450px; }
         .messages-area { flex: 1; overflow-y: auto; padding: 15px; font-size: 15px; background: rgba(10, 14, 28, 0.4); border-radius: 8px; margin-bottom: 12px; border: 1px solid #1c2136; }
+        
         .msg-line { margin-bottom: 10px; clear: both; display: flex; align-items: flex-start; gap: 8px; }
         .msg-mine { flex-direction: row-reverse; }
         .msg-bubble { display: inline-block; padding: 8px 14px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
@@ -53,72 +65,65 @@
         .msg-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary-purple); }
         .msg-system { text-align: center; margin: 12px 0; display: block; width: 100%; }
         .msg-system span { background: rgba(6,9,19,0.8); border: 1px solid #3c1e6d; padding: 6px 16px; border-radius: 30px; font-size: 13px; color: #b8b1ff; }
+
         .typing-indicator { font-size: 12px; color: var(--text-muted); height: 18px; margin-bottom: 5px; }
         .chat-input-group { display: flex; gap: 8px; margin-top: 8px; }
         .chat-input-group input { flex: 1; margin: 0; }
         .chat-input-group button { padding: 0 25px; background: var(--primary-purple); border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
         .emoji-bar { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid #1c2136; margin-bottom: 8px; }
         .emoji-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
+
         /* Cinema Mode Modifications */
         body.cinema-mode-active { background: #020205; }
         body.cinema-mode-active .container { max-width: 100%; padding: 10px; }
         body.cinema-mode-active .room-header,
         body.cinema-mode-active .card:not(.video-block):not(.chat-box) { display: none !important; }
         body.cinema-mode-active .cinema-layout { grid-template-columns: 3fr 1fr; gap: 15px; }
-        /* New Floating Exit Button Styling */
-        .exit-cinema-btn {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 10000;
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-            transition: 0.3s ease;
-            display: none;
-        }
-        .exit-cinema-btn:hover {
-            background: #dc2626;
-            transform: scale(1.05);
-        }
-        body.cinema-mode-active .exit-cinema-btn {
-            display: block !important;
-        }
+
+        /* الإضافات الجديدة */
+        .modal-bg { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 30000; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: #161b33; padding: 25px; border-radius: 16px; width: 400px; border: 1px solid var(--primary-purple); }
+        .exit-cinema-btn { position: fixed; top: 15px; right: 15px; z-index: 10000; background: rgba(239, 68, 68, 0.9); color: white; border: none; padding: 10px 16px; border-radius: 30px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); display: none; }
+        body.cinema-mode-active .exit-cinema-btn { display: block !important; }
     </style>
 </head>
 <body>
-    <style>
-    /* إضافة الميزات الجديدة */
-    .modal-bg { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 30000; display: flex; align-items: center; justify-content: center; }
-    .modal-content { background: #161b33; padding: 25px; border-radius: 16px; width: 400px; border: 1px solid var(--primary-purple); }
-    .exit-cinema-btn { position: fixed; top: 15px; right: 15px; z-index: 10000; background: rgba(239, 68, 68, 0.9); color: white; border: none; padding: 10px 16px; border-radius: 30px; font-weight: bold; cursor: pointer; display: none; }
-    body.cinema-mode-active .exit-cinema-btn { display: block !important; }
-</style>
+
     <button id="exit-cinema-floating-btn" class="exit-cinema-btn">❌ Close Cinema Mode</button>
+
+    <div id="video-search-modal" class="modal-bg hidden">
+        <div class="modal-content">
+            <h3 style="color:white;">Enter YouTube URL</h3>
+            <input type="text" id="modal-video-input" placeholder="Paste YouTube link...">
+            <button id="modal-apply-btn" class="btn-primary">Apply Video</button>
+            <button id="modal-close-btn" class="btn-secondary" style="width:100%;">Close</button>
+        </div>
+    </div>
+
     <div class="container">
         <div id="auth-container" class="card auth-box">
             <h1>RAFA WATCH</h1>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">Choose how you want to enter the theater</p>
+            
             <button id="google-login-btn" class="btn-google">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;" alt="Google">
                 Sign in with Google
             </button>
+
             <div style="text-align: center; margin: 15px 0; color: var(--text-muted);">— OR —</div>
+
             <input type="text" id="guest-name-input" placeholder="Enter Guest Name...">
             <button id="guest-login-btn" class="btn-primary" style="background: #1c183a; border: 1px solid var(--border-color);">Enter as Guest 👤</button>
         </div>
+
         <div id="lobby-container" class="card hidden">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span id="user-welcome-tag" style="color: var(--neon-blue); font-weight: bold; display: flex; align-items: center; gap: 8px;">Welcome</span>
                 <button id="logout-btn" class="btn-secondary" style="padding: 5px 10px; font-size: 12px;">Logout</button>
             </div>
             <h1 style="margin-bottom: 30px; font-size: 36px;">THEATER LOBBY</h1>
+            
             <label style="font-weight: bold; display:block; margin-bottom: 8px;">1. Room Credentials</label>
             <div class="form-grid">
                 <div class="room-input-container">
@@ -127,19 +132,27 @@
                 </div>
                 <input type="password" id="password-input" placeholder="Enter Room Password...">
             </div>
+
             <label style="font-weight: bold; display:block; margin-bottom: 8px;">2. Video URL</label>
             <input type="text" id="video-url-input" placeholder="Enter YouTube video link here...">
+
             <button id="join-btn" class="btn-primary" style="margin-top: 10px;">Connect & Launch Theater Room 🍿</button>
         </div>
+
         <div id="cinema-container" class="hidden">
             <div class="room-header card" style="padding: 15px 20px; margin-bottom: 15px;">
                 <div><h2 id="room-title-display" style="margin: 0; font-size: 20px;">Room: None</h2></div>
                 <div id="online-users-container"></div>
             </div>
+
             <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                <button id="yt-icon-trigger" style="background:none; border:none; cursor:pointer;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" width="45">
+                </button>
                 <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube link here and press Enter to switch..." style="margin: 0; flex: 1;">
                 <button class="btn-secondary" id="cinema-toggle-btn">🎬 Cinema Mode</button>
             </div>
+
             <div class="cinema-layout">
                 <div class="video-block card" style="margin-bottom: 0;">
                     <div id="syncOverlay" class="sync-overlay">
@@ -147,15 +160,18 @@
                     </div>
                     <div id="youtube-player" class="hidden"></div>
                 </div>
+
                 <div class="chat-box card" id="main-chat-card" style="margin-bottom: 0;">
                     <h3 style="margin: 0 0 10px 0; text-align: left;">💬 Live Chat</h3>
                     <div id="chat-messages" class="messages-area"></div>
+                    
                     <div class="emoji-bar">
                         <button class="emoji-btn" id="emoji-1">😂</button>
                         <button class="emoji-btn" id="emoji-2">🔥</button>
                         <button class="emoji-btn" id="emoji-3">🍿</button>
                         <button class="emoji-btn" id="emoji-4">❤️</button>
                     </div>
+
                     <div id="typing-box" class="typing-indicator"></div>
                     <div class="chat-input-group">
                         <input type="text" id="chat-input" placeholder="Type a message...">
@@ -165,10 +181,12 @@
             </div>
         </div>
     </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyCCt7OGpMjDRCsRV5s201M03RtvPdPKTJY",
             authDomain: "rafa-watch-party.firebaseapp.com",
@@ -178,10 +196,12 @@
             appId: "1:176872311795:web:313f83c36e1a6ccb9de086",
             measurementId: "G-93T6DBE1E2"
         };
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const socket = io();
+        
         let myName = "";
         let myPhoto = "";
         let isGuest = true;
@@ -189,24 +209,30 @@
         let blockSyncEmit = false;
         let typingTimeout = null;
         let isHost = false;
+
         function navigateTo(screenId) {
             document.getElementById("auth-container").classList.add("hidden");
             document.getElementById("lobby-container").classList.add("hidden");
             document.getElementById("cinema-container").classList.add("hidden");
+
             document.getElementById(screenId).classList.remove("hidden");
             history.pushState({ currentScreen: screenId }, "", `#${screenId}`);
         }
+
         window.addEventListener("popstate", (event) => {
             document.getElementById("auth-container").classList.add("hidden");
             document.getElementById("lobby-container").classList.add("hidden");
             document.getElementById("cinema-container").classList.add("hidden");
+
             if (event.state && event.state.currentScreen) {
                 document.getElementById(event.state.currentScreen).classList.remove("hidden");
             } else {
                 document.getElementById("auth-container").classList.remove("hidden");
             }
         });
+
         history.replaceState({ currentScreen: "auth-container" }, "", "");
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 handleLoginSuccess(user.displayName, user.photoURL, false);
@@ -214,28 +240,34 @@
                 navigateTo("auth-container");
             }
         });
+
         function handleLoginSuccess(name, photoUrl, guestStatus) {
             myName = name;
             myPhoto = photoUrl || "";
             isGuest = guestStatus;
+            
             const welcomeTag = document.getElementById("user-welcome-tag");
             if (myPhoto) {
                 welcomeTag.innerHTML = `<img src="${myPhoto}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;"> Logged in as: ${myName} ⭐`;
             } else {
                 welcomeTag.innerText = `Logged in as: ${myName} (Guest) 👤`;
             }
+            
             navigateTo("lobby-container");
         }
+
         document.getElementById("google-login-btn").addEventListener("click", () => {
             signInWithPopup(auth, provider).catch((error) => {
                 alert("Google Sign in Failed: " + error.message);
             });
         });
+
         document.getElementById("guest-login-btn").addEventListener("click", () => {
             const guestName = document.getElementById("guest-name-input").value.trim();
             if(!guestName) return alert("Please type a guest name!");
             handleLoginSuccess(guestName, "", true);
         });
+
         document.getElementById("logout-btn").addEventListener("click", () => {
             if(!isGuest) {
                 signOut(auth);
@@ -243,18 +275,23 @@
                 window.location.reload();
             }
         });
+
         document.getElementById("rand-room-btn").addEventListener("click", () => {
             document.getElementById("room-input").value = "RAFA-" + Math.floor(1000 + Math.random() * 9000);
         });
+
         function getYouTubeId(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
             return (match && match[2].length === 11) ? match[2] : null;
         }
+
         function loadVideoSource(url) {
             const ytId = getYouTubeId(url);
             if (!ytId) return alert("Unsupported link! Paste a valid YouTube URL.");
+            
             document.getElementById("youtube-player").classList.remove("hidden");
+
             if (window.YT && window.YT.Player) {
                 if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
                     ytPlayer.loadVideoById(ytId);
@@ -268,6 +305,7 @@
                 window.onYouTubeIframeAPIReady = () => buildYT(ytId);
             }
         }
+
         function buildYT(id) {
             ytPlayer = new YT.Player('youtube-player', {
                 height: '450', width: '100%', videoId: id,
@@ -275,20 +313,26 @@
                 events: { 'onStateChange': onPlayerStateChange }
             });
         }
+
         document.getElementById("join-btn").addEventListener("click", () => {
             const roomName = document.getElementById("room-input").value.trim();
             const roomPassword = document.getElementById("password-input").value.trim();
             const initialUrl = document.getElementById("video-url-input").value.trim();
+
             if(!roomName || !roomPassword) return alert("Please fill room credentials!");
+
             socket.emit("join room", { username: myName, photo: myPhoto, room: roomName, password: roomPassword, videoUrl: initialUrl });
             document.getElementById("room-title-display").innerText = `Room ➔ ${roomName}`;
         });
+
         socket.on('join success', (data) => {
             isHost = data.isHost;
             navigateTo("cinema-container");
             if(data.videoUrl) loadVideoSource(data.videoUrl);
         });
+
         socket.on('join error', (msg) => alert(msg));
+
         function onPlayerStateChange(event) {
             if (blockSyncEmit || !ytPlayer) { blockSyncEmit = false; return; }
             const time = ytPlayer.getCurrentTime();
@@ -298,13 +342,16 @@
                 socket.emit('video action', { type: 'pause', time: time });
             }
         }
+
         socket.on('video action', (data) => {
             blockSyncEmit = true;
             if (data.type === 'change_src') return loadVideoSource(data.url);
             if (!ytPlayer || typeof ytPlayer.seekTo !== 'function') return;
+
             if(data.type === 'play') { ytPlayer.seekTo(data.time, true); ytPlayer.playVideo(); }
             else if(data.type === 'pause') { ytPlayer.seekTo(data.time, true); ytPlayer.pauseVideo(); }
         });
+
         document.getElementById("inline-video-switcher").addEventListener("keypress", (e) => {
             if (e.key === 'Enter' && e.target.value.trim()) {
                 socket.emit('video action', { type: 'change_src', url: e.target.value.trim() });
@@ -312,20 +359,24 @@
                 e.target.value = "";
             }
         });
+
         document.getElementById("syncOverlay").addEventListener("click", () => {
             document.getElementById("syncOverlay").style.display = "none";
             if(ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
         });
+
         window.sendQuickEmoji = function(emoji) {
             socket.emit("chat message", emoji);
             appendMsg(myName, myPhoto, emoji, true);
             const input = document.getElementById("chat-input");
             input.value = "";
         }
+
         document.getElementById("emoji-1").addEventListener("click", () => sendQuickEmoji('😂'));
         document.getElementById("emoji-2").addEventListener("click", () => sendQuickEmoji('🔥'));
         document.getElementById("emoji-3").addEventListener("click", () => sendQuickEmoji('🍿'));
         document.getElementById("emoji-4").addEventListener("click", () => sendQuickEmoji('❤️'));
+
         document.getElementById("send-chat-btn").addEventListener("click", sendChatMessage);
         document.getElementById("chat-input").addEventListener("keypress", (e) => {
             if(e.key === 'Enter') sendChatMessage();
@@ -333,6 +384,7 @@
             clearTimeout(typingTimeout);
             typingTimeout = setTimeout(() => socket.emit('typing', false), 2000);
         });
+
         function sendChatMessage() {
             const input = document.getElementById("chat-input");
             if(!input.value.trim()) return;
@@ -341,10 +393,12 @@
             input.value = "";
             socket.emit('typing', false);
         }
+
         function appendMsg(user, photo, text, isMine) {
             const area = document.getElementById("chat-messages");
             const cls = isMine ? "msg-mine" : "msg-friend";
             const avatarHtml = photo ? `<img src="${photo}" class="msg-avatar">` : `<div class="msg-avatar" style="background:#4a5568; display:inline-block;"></div>`;
+            
             area.innerHTML += `
                 <div class="msg-line ${cls}">
                     ${avatarHtml}
@@ -355,13 +409,16 @@
                 </div>`;
             area.scrollTop = area.scrollHeight;
         }
+
         socket.on("chat message", (data) => appendMsg(data.username, data.photo, data.text, false));
         socket.on("system notification", (data) => {
             document.getElementById("chat-messages").innerHTML += `<div class="msg-system"><span>${data.text}</span></div>`;
         });
+
         socket.on("typing", (data) => {
             document.getElementById("typing-box").innerText = data.isTyping ? `✍️ ${data.username} is typing...` : '';
         });
+
         socket.on("update users", (users) => {
             const container = document.getElementById("online-users-container");
             container.innerHTML = users.map(u => {
@@ -370,14 +427,27 @@
                 return `<div class="user-badge">${userPhotoHtml} ${hostCrown}${u.username}</div>`;
             }).join('');
         });
-        // Toggle Cinema Mode Function
+
         document.getElementById("cinema-toggle-btn").addEventListener("click", () => {
             document.body.classList.toggle("cinema-mode-active");
         });
-        // Event listener for the new floating close button
+
         document.getElementById("exit-cinema-floating-btn").addEventListener("click", () => {
             document.body.classList.remove("cinema-mode-active");
         });
+
+        // البرمجة الخاصة بالنافذة المنبثقة:
+        document.getElementById("yt-icon-trigger").onclick = () => document.getElementById("video-search-modal").classList.remove("hidden");
+        document.getElementById("modal-close-btn").onclick = () => document.getElementById("video-search-modal").classList.add("hidden");
+        
+        document.getElementById("modal-apply-btn").onclick = () => {
+            const url = document.getElementById("modal-video-input").value.trim();
+            if(url) {
+                socket.emit('video action', { type: 'change_src', url: url });
+                loadVideoSource(url); 
+                document.getElementById("video-search-modal").classList.add("hidden");
+            }
+        };
     </script>
 </body>
-</html> 
+</html>
