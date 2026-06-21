@@ -13,7 +13,6 @@
             --neon-blue: #00d2ff;
             --text-color: #ffffff;
             --text-muted: #a5a9b8;
-            --google-red: #ea4335;
         }
 
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; }
@@ -33,7 +32,6 @@
         .btn-google:hover { background: #f1f1f1; }
 
         .btn-secondary { background: #1c183a; border: 1px solid var(--border-color); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
         .auth-box { max-width: 450px; margin: 100px auto; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .room-input-container { position: relative; width: 100%; }
@@ -76,9 +74,6 @@
         body.cinema-mode-active .card:not(.video-block):not(.chat-box) { display: none !important; }
         body.cinema-mode-active .cinema-layout { grid-template-columns: 3fr 1fr; gap: 15px; }
     </style>
-
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -100,7 +95,7 @@
 
         <div id="lobby-container" class="card hidden">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span id="user-welcome-tag" style="color: var(--neon-blue); font-weight: bold;">Welcome, User</span>
+                <span id="user-welcome-tag" style="color: var(--neon-blue); font-weight: bold;">Welcome</span>
                 <button id="logout-btn" class="btn-secondary" style="padding: 5px 10px; font-size: 12px;">Logout</button>
             </div>
             <h1 style="margin-bottom: 30px; font-size: 36px;">THEATER LOBBY</h1>
@@ -144,10 +139,10 @@
                     <div id="chat-messages" class="messages-area"></div>
                     
                     <div class="emoji-bar">
-                        <button class="emoji-btn" onclick="sendQuickEmoji('😂')">😂</button>
-                        <button class="emoji-btn" onclick="sendQuickEmoji('🔥')">🔥</button>
-                        <button class="emoji-btn" onclick="sendQuickEmoji('🍿')">🍿</button>
-                        <button class="emoji-btn" onclick="sendQuickEmoji('❤️')">❤️</button>
+                        <button class="emoji-btn" id="emoji-1">😂</button>
+                        <button class="emoji-btn" id="emoji-2">🔥</button>
+                        <button class="emoji-btn" id="emoji-3">🍿</button>
+                        <button class="emoji-btn" id="emoji-4">❤️</button>
                     </div>
 
                     <div id="typing-box" class="typing-indicator"></div>
@@ -161,7 +156,10 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyCCt70GpMjDRcSRV5s201M03RtvPdPKTJY",
             authDomain: "rafa-watch-party.firebaseapp.com",
@@ -171,15 +169,14 @@
             appId: "1:176872311795:web:313f83c36e1a6ccb9de086"
         };
         
-        firebase.initializeApp(firebaseConfig);
-        
-        const provider = new firebase.auth.GoogleAuthProvider();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
         const socket = io();
         
         let myName = "";
         let isGuest = true;
         let ytPlayer = null;
-        let currentEngine = "youtube";
         let blockSyncEmit = false;
         let typingTimeout = null;
 
@@ -192,7 +189,7 @@
         }
 
         document.getElementById("google-login-btn").addEventListener("click", () => {
-            firebase.auth().signInWithPopup(provider).then((result) => {
+            signInWithPopup(auth, provider).then((result) => {
                 handleLoginSuccess(result.user.displayName, false);
             }).catch((error) => { alert("Google Sign in Failed: " + error.message); });
         });
@@ -204,8 +201,8 @@
         });
 
         document.getElementById("logout-btn").addEventListener("click", () => {
-            if(!isGuest) firebase.auth().signOut();
-            location.reload();
+            if(!isGuest) signOut(auth);
+            window.location.reload();
         });
 
         document.getElementById("rand-room-btn").addEventListener("click", () => {
@@ -297,10 +294,15 @@
             if(ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
         });
 
-        function sendQuickEmoji(emoji) {
+        window.sendQuickEmoji = function(emoji) {
             socket.emit("chat message", emoji);
             appendMsg("You", emoji, true);
         }
+
+        document.getElementById("emoji-1").addEventListener("click", () => sendQuickEmoji('😂'));
+        document.getElementById("emoji-2").addEventListener("click", () => sendQuickEmoji('🔥'));
+        document.getElementById("emoji-3").addEventListener("click", () => sendQuickEmoji('🍿'));
+        document.getElementById("emoji-4").addEventListener("click", () => sendQuickEmoji('❤️'));
 
         document.getElementById("send-chat-btn").addEventListener("click", sendChatMessage);
         document.getElementById("chat-input").addEventListener("keypress", (e) => {
