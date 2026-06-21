@@ -160,16 +160,16 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-       // إعدادات الفايربيس بعد تصحيح الحروف الحرفية تماماً
+       // إعدادات الفايربيس الصحيحة والمطابقة لمشروعك تماماً
         const firebaseConfig = {
             apiKey: "AIzaSyCCt7OGpMjDRCsRV5s201M03RtvPdPKTJY",
             authDomain: "rafa-watch-party.firebaseapp.com",
             projectId: "rafa-watch-party",
             storageBucket: "rafa-watch-party.firebasestorage.app",
             messagingSenderId: "176872311795",
-            appId: "1:176872311795:web:313f83c36e1a6ccb9de086"
+            appId: "1:176872311795:web:313f83c36e1a6ccb9de086",
+            measurementId: "G-93T6DBE1E2"
         };
-        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
