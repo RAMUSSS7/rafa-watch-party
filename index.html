@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RAFA - Ultimate Watch Party</title>
-    <meta name="google-site-verification" content="yEGNzRBKaEER6NSFX0CWZWYsmPaPVj_M" />
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #060913 0%, #110a24 100%);
@@ -14,50 +13,54 @@
             --neon-blue: #00d2ff;
             --text-color: #ffffff;
             --text-muted: #a5a9b8;
+            --google-red: #ea4335;
         }
 
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; transition: background 0.5s ease; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 25px; transition: all 0.5s ease; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 25px; }
         .hidden { display: none !important; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: all 0.3s ease; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1, h2, h3 { margin-top: 0; font-weight: 700; background: linear-gradient(to right, var(--neon-blue), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
         
-        input { width: 100%; padding: 14px; margin-bottom: 18px; background: #121624; border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 15px; transition: 0.3s; }
-        input:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+        input { width: 100%; padding: 14px; margin-bottom: 18px; background: #121624; border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 15px; }
+        input:focus { border-color: var(--neon-blue); }
         
-        .btn-primary { width: 100%; padding: 15px; background: linear-gradient(to right, var(--primary-purple), #a04ef6); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-primary { width: 100%; padding: 15px; background: linear-gradient(to right, var(--primary-purple), #a04ef6); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 10px; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6); }
 
-        .btn-secondary { background: #1c183a; border: 1px solid var(--border-color); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-secondary:hover { background: var(--border-color); }
+        .btn-google { width: 100%; padding: 15px; background: #ffffff; color: #000000; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-google:hover { background: #f1f1f1; }
 
+        .btn-secondary { background: #1c183a; border: 1px solid var(--border-color); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        .auth-box { max-width: 450px; margin: 100px auto; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .room-input-container { position: relative; width: 100%; }
         .gen-btn { position: absolute; right: 10px; top: 10px; background: var(--primary-purple); border: none; color: white; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
 
-        .cinema-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; transition: all 0.5s ease; }
+        .cinema-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         @media (max-width: 850px) { .cinema-layout { grid-template-columns: 1fr; } }
 
         .video-block { position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden; min-height: 450px; }
         #youtube-player { width: 100%; height: 450px; display: block; border: none; border-radius: 12px; }
 
         .sync-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: rgba(6, 9, 19, 0.9); display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; border-radius: 12px; }
-        .sync-btn { background: var(--primary-purple); color: white; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; box-shadow: 0 0 20px var(--primary-purple); }
+        .sync-btn { background: var(--primary-purple); color: white; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 18px; border: none; }
 
         .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .user-badge { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--primary-purple); padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-block; margin-right: 5px; }
 
-        .chat-box { display: flex; flex-direction: column; height: 450px; transition: opacity 0.3s ease; }
+        .chat-box { display: flex; flex-direction: column; height: 450px; }
         .messages-area { flex: 1; overflow-y: auto; padding: 15px; font-size: 15px; background: rgba(10, 14, 28, 0.4); border-radius: 8px; margin-bottom: 12px; border: 1px solid #1c2136; }
         
-        .msg-line { margin-bottom: 10px; line-height: 1.4; clear: both; }
+        .msg-line { margin-bottom: 10px; clear: both; }
         .msg-bubble { display: inline-block; padding: 8px 14px; border-radius: 12px; max-width: 85%; word-wrap: break-word; }
         .msg-mine .msg-bubble { background: linear-gradient(135deg, #5a189a, #7b2cbf); color: white; float: right; }
         .msg-friend .msg-bubble { background: #161b33; border: 1px solid var(--border-color); float: left; }
         .msg-friend strong { color: var(--neon-blue); display: block; font-size: 12px; margin-bottom: 3px; }
         .msg-system { text-align: center; margin: 12px 0; }
-        .msg-system span { background: linear-gradient(90deg, rgba(6,9,19,0.8), rgba(28,10,36,0.8)); border: 1px solid #3c1e6d; padding: 6px 16px; border-radius: 30px; font-size: 13px; color: #b8b1ff; }
+        .msg-system span { background: rgba(6,9,19,0.8); border: 1px solid #3c1e6d; padding: 6px 16px; border-radius: 30px; font-size: 13px; color: #b8b1ff; }
 
         .typing-indicator { font-size: 12px; color: var(--text-muted); height: 18px; margin-bottom: 5px; }
         .chat-input-group { display: flex; gap: 8px; margin-top: 8px; }
@@ -65,55 +68,44 @@
         .chat-input-group button { padding: 0 25px; background: var(--primary-purple); border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
         .emoji-bar { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid #1c2136; margin-bottom: 8px; }
-        .emoji-btn { background: none; border: none; font-size: 20px; cursor: pointer; transition: transform 0.2s; padding: 2px; }
-        .emoji-btn:hover { transform: scale(1.3); }
-
-        .opacity-control { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-        .opacity-control input { margin: 0; width: 80px; padding: 0; height: 5px; }
-
-        .exit-cinema-btn {
-            position: fixed; top: 20px; left: 20px; z-index: 9999;
-            background: linear-gradient(135deg, #ff0055, #990033);
-            color: white; border: none; font-weight: bold; padding: 12px 20px;
-            border-radius: 50px; cursor: pointer; font-size: 14px;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
-            display: none; transition: transform 0.2s;
-        }
-        .exit-cinema-btn:hover { transform: scale(1.1); }
+        .emoji-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
 
         body.cinema-mode-active { background: #020205; }
         body.cinema-mode-active .container { max-width: 100%; padding: 10px; }
         body.cinema-mode-active .room-header, 
         body.cinema-mode-active .card:not(.video-block):not(.chat-box) { display: none !important; }
         body.cinema-mode-active .cinema-layout { grid-template-columns: 3fr 1fr; gap: 15px; }
-        body.cinema-mode-active .video-block, body.cinema-mode-active .chat-box { background: rgba(5, 5, 10, 0.9); border-color: #110f1c; }
-        body.cinema-mode-active .exit-cinema-btn { display: block !important; }
-
-        .platforms-bar {
-            display: flex; gap: 12px; align-items: center; margin-top: -10px; margin-bottom: 15px; padding: 5px; flex-wrap: wrap;
-        }
-        .platform-badge {
-            display: flex; align-items: center; gap: 8px; background: rgba(30, 35, 59, 0.6);
-            border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px;
-            font-size: 13px; font-weight: 500; color: var(--text-muted); transition: all 0.3s;
-        }
-        .platform-badge img { width: 16px; height: 16px; object-fit: contain; }
-        .platform-badge.yt:hover { border-color: #ff0000; color: white; box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); background: rgba(255, 0, 0, 0.1); }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
-    <button class="exit-cinema-btn" id="exit-cinema-floating-btn">❌ Close Cinema Mode</button>
-
     <div class="container">
-        <!-- 1. LOBBY CONTAINER -->
-        <div id="lobby-container" class="card">
-            <h1 style="text-align: center; margin-bottom: 30px; font-size: 36px;">RAFA WATCH PARTY</h1>
+        <div id="auth-container" class="card auth-box">
+            <h1>RAFA WATCH</h1>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">Choose how you want to enter the theater</p>
             
-            <label style="font-weight: bold; display:block; margin-bottom: 8px;">1. Profile Name</label>
-            <input type="text" id="username-input" placeholder="Enter your display name...">
+            <button id="google-login-btn" class="btn-google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;" alt="Google">
+                Sign in with Google
+            </button>
 
-            <label style="font-weight: bold; display:block; margin-bottom: 8px;">2. Room Credentials</label>
+            <div style="text-align: center; margin: 15px 0; color: var(--text-muted);">— OR —</div>
+
+            <input type="text" id="guest-name-input" placeholder="Enter Guest Name...">
+            <button id="guest-login-btn" class="btn-primary" style="background: #1c183a; border: 1px solid var(--border-color);">Enter as Guest 👤</button>
+        </div>
+
+        <div id="lobby-container" class="card hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="user-welcome-tag" style="color: var(--neon-blue); font-weight: bold;">Welcome, User</span>
+                <button id="logout-btn" class="btn-secondary" style="padding: 5px 10px; font-size: 12px;">Logout</button>
+            </div>
+            <h1 style="margin-bottom: 30px; font-size: 36px;">THEATER LOBBY</h1>
+            
+            <label style="font-weight: bold; display:block; margin-bottom: 8px;">1. Room Credentials</label>
             <div class="form-grid">
                 <div class="room-input-container">
                     <input type="text" id="room-input" placeholder="Room Name...">
@@ -122,35 +114,21 @@
                 <input type="password" id="password-input" placeholder="Enter Room Password...">
             </div>
 
-            <label style="font-weight: bold; display:block; margin-bottom: 8px;">3. Video URL</label>
-            <input type="text" id="video-url-input" value="" placeholder="Enter YouTube video link here...">
-
-            <div class="platforms-bar">
-                <div class="platform-badge yt">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_icon_with_only_the_play_button_%282023-2024%29.svg" alt="YouTube"> YouTube
-                </div>
-            </div>
+            <label style="font-weight: bold; display:block; margin-bottom: 8px;">2. Video URL</label>
+            <input type="text" id="video-url-input" placeholder="Enter YouTube video link here...">
 
             <button id="join-btn" class="btn-primary" style="margin-top: 10px;">Connect & Launch Theater Room 🍿</button>
         </div>
 
-        <!-- 2. CINEMA CONTAINER -->
         <div id="cinema-container" class="hidden">
             <div class="room-header card" style="padding: 15px 20px; margin-bottom: 15px;">
                 <div><h2 id="room-title-display" style="margin: 0; font-size: 20px;">Room: None</h2></div>
                 <div id="online-users-container"></div>
             </div>
 
-            <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
-                    <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube link here and press Enter to switch..." style="margin: 0; flex: 1;">
-                    <button class="btn-secondary" id="cinema-toggle-btn">🎬 Cinema Mode</button>
-                </div>
-                <div class="platforms-bar" style="margin: 0; padding-left: 5px;">
-                    <div class="platform-badge yt">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_icon_with_only_the_play_button_%282023-2024%29.svg" alt="YouTube"> YouTube Supported
-                    </div>
-                </div>
+            <div class="card" style="padding: 15px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="inline-video-switcher" placeholder="🚀 Paste a new YouTube link here and press Enter to switch..." style="margin: 0; flex: 1;">
+                <button class="btn-secondary" id="cinema-toggle-btn">🎬 Cinema Mode</button>
             </div>
 
             <div class="cinema-layout">
@@ -162,20 +140,11 @@
                 </div>
 
                 <div class="chat-box card" id="main-chat-card" style="margin-bottom: 0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <h3 style="margin: 0;">💬 Live Chat</h3>
-                        <div class="opacity-control">
-                            <span>Opacity:</span>
-                            <input type="range" id="chat-opacity-slider" min="20" max="100" value="100">
-                        </div>
-                    </div>
-                    
+                    <h3 style="margin: 0 0 10px 0; text-align: left;">💬 Live Chat</h3>
                     <div id="chat-messages" class="messages-area"></div>
                     
                     <div class="emoji-bar">
                         <button class="emoji-btn" onclick="sendQuickEmoji('😂')">😂</button>
-                        <button class="emoji-btn" onclick="sendQuickEmoji('😮')">😮</button>
-                        <button class="emoji-btn" onclick="sendQuickEmoji('😱')">😱</button>
                         <button class="emoji-btn" onclick="sendQuickEmoji('🔥')">🔥</button>
                         <button class="emoji-btn" onclick="sendQuickEmoji('🍿')">🍿</button>
                         <button class="emoji-btn" onclick="sendQuickEmoji('❤️')">❤️</button>
@@ -191,68 +160,70 @@
         </div>
     </div>
 
-    <!-- كود الـ JavaScript الخاص بالـ Frontend للمتصفح -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // إعداد إدارة التاريخ للمتصفح (السماح بالتراجع للـ Lobby بضغطة زر الرجوع)
-        if (location.hash === "" || location.hash === "#room") {
-            history.replaceState({ inRoom: false }, "", "#");
-        }
-
-        const socket = io();
-        let myName = "";
-        let typingTimeout = null;
-        let currentEngine = "youtube"; 
-        let ytPlayer = null;
-        let initialVideoUrl = "";
-        let blockSyncEmit = false;
+        // تكوين مشروع الفايربيس (Firebase Configuration)
+        // ملاحظة: ضع مفاتيح Firebase الخاصة بمشروعك هنا ليعمل تسجيل جوجل بشكل صحيح!
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
         
-        const ytd = document.getElementById("youtube-player");
-        const chatCard = document.getElementById("main-chat-card");
+        // حماية عند عدم ملء بيانات فايربيس الافتراضية للتشغيل التجريبي كضيف
+        if(firebaseConfig.apiKey !== "YOUR_API_KEY") {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const socket = io();
+        
+        let myName = "";
+        let isGuest = true;
+        let ytPlayer = null;
+        let currentEngine = "youtube";
+        let blockSyncEmit = false;
+        let typingTimeout = null;
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playPingSound() {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = "sine";
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.15);
-            } catch(e) { console.log("Audio Context Blocked until Interaction"); }
+        // إدارة واجهة تسجيل الدخول
+        function handleLoginSuccess(name, guestStatus) {
+            myName = name;
+            isGuest = guestStatus;
+            document.getElementById("user-welcome-tag").innerText = `Logged in as: ${myName} ${isGuest ? '(Guest)' : '⭐'}`;
+            document.getElementById("auth-container").classList.add("hidden");
+            document.getElementById("lobby-container").classList.remove("hidden");
         }
 
-        document.getElementById("chat-opacity-slider").addEventListener("input", (e) => {
-            chatCard.style.opacity = e.target.value / 100;
+        // تسجيل الدخول بواسطة جوجل
+        document.getElementById("google-login-btn").addEventListener("click", () => {
+            if(firebaseConfig.apiKey === "YOUR_API_KEY") {
+                alert("Please configure your Firebase credentials in the script code first!");
+                return;
+            }
+            firebase.auth().signInWithPopup(provider).then((result) => {
+                handleLoginSuccess(result.user.displayName, false);
+            }).catch((error) => { alert("Google Sign in Failed: " + error.message); });
         });
 
-        function toggleCinemaMode(forceClose = false) {
-            if (forceClose) {
-                document.body.classList.remove("cinema-mode-active");
-            } else {
-                document.body.classList.toggle("cinema-mode-active");
-            }
+        // الدخول كضيف
+        document.getElementById("guest-login-btn").addEventListener("click", () => {
+            const guestName = document.getElementById("guest-name-input").value.trim();
+            if(!guestName) return alert("Please type a guest name!");
+            handleLoginSuccess(guestName + " (Guest)", true);
+        });
 
-            const btn = document.getElementById("cinema-toggle-btn");
-            if(document.body.classList.contains("cinema-mode-active")) {
-                btn.innerText = "✨ Normal Mode";
-                btn.style.background = "#8a2be2";
-            } else {
-                btn.innerText = "🎬 Cinema Mode";
-                btn.style.background = "#1c183a";
-            }
-        }
+        // تسجيل الخروج
+        document.getElementById("logout-btn").addEventListener("click", () => {
+            if(!isGuest) firebase.auth().signOut();
+            location.reload();
+        });
 
-        document.getElementById("cinema-toggle-btn").addEventListener("click", () => toggleCinemaMode());
-        document.getElementById("exit-cinema-floating-btn").addEventListener("click", () => toggleCinemaMode(true));
-
+        // إدارة الغرف واليوتيوب (مستقرة ومجربة)
         document.getElementById("rand-room-btn").addEventListener("click", () => {
-            const randomName = "RAFA-" + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById("room-input").value = randomName;
+            document.getElementById("room-input").value = "RAFA-" + Math.floor(1000 + Math.random() * 9000);
         });
 
         function getYouTubeId(url) {
@@ -261,110 +232,56 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
-        function hideAllPlayers() {
-            ytd.classList.add("hidden");
-            if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
-        }
-
-        function initYouTubeEngine(ytId) {
-            hideAllPlayers();
-            currentEngine = "youtube";
-            ytd.classList.remove("hidden");
+        function loadVideoSource(url) {
+            const ytId = getYouTubeId(url);
+            if (!ytId) return alert("Unsupported link! Paste a valid YouTube URL.");
+            
+            document.getElementById("youtube-player").classList.remove("hidden");
 
             if (window.YT && window.YT.Player) {
                 if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
                     ytPlayer.loadVideoById(ytId);
                 } else {
-                    ytd.innerHTML = "";
-                    ytPlayer = new YT.Player('youtube-player', {
-                        height: '450',
-                        width: '100%',
-                        videoId: ytId,
-                        playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0 },
-                        events: { 'onStateChange': onPlayerStateChange }
-                    });
+                    buildYT(ytId);
                 }
             } else {
                 const tag = document.createElement('script');
                 tag.src = "https://www.youtube.com/iframe_api";
-                const firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-                
-                window.onYouTubeIframeAPIReady = function() {
-                    ytPlayer = new YT.Player('youtube-player', {
-                        height: '450',
-                        width: '100%',
-                        videoId: ytId,
-                        playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0 },
-                        events: { 'onStateChange': onPlayerStateChange }
-                    });
-                };
+                document.getElementsByTagName('script')[0].parentNode.insertBefore(tag, document.getElementsByTagName('script')[0]);
+                window.onYouTubeIframeAPIReady = () => buildYT(ytId);
             }
         }
 
-        function loadVideoSource(url) {
-            const ytId = getYouTubeId(url);
-            if (ytId) {
-                initYouTubeEngine(ytId);
-            } else {
-                alert("Unsupported link! Please provide a valid YouTube URL.");
-            }
+        function buildYT(id) {
+            ytPlayer = new YT.Player('youtube-player', {
+                height: '450', width: '100%', videoId: id,
+                playerVars: { 'autoplay': 1, 'controls': 1 },
+                events: { 'onStateChange': onPlayerStateChange }
+            });
         }
 
         document.getElementById("join-btn").addEventListener("click", () => {
-            myName = document.getElementById("username-input").value.trim();
             const roomName = document.getElementById("room-input").value.trim();
             const roomPassword = document.getElementById("password-input").value.trim();
-            initialVideoUrl = document.getElementById("video-url-input").value.trim();
+            const initialUrl = document.getElementById("video-url-input").value.trim();
 
-            if(!myName || !roomName || !roomPassword) return alert("Please fill Username, Room Name, and Password!");
+            if(!roomName || !roomPassword) return alert("Please fill room credentials!");
 
-            socket.emit("join room", { username: myName, room: roomName, password: roomPassword, videoUrl: initialVideoUrl });
+            socket.emit("join room", { username: myName, room: roomName, password: roomPassword, videoUrl: initialUrl });
             document.getElementById("room-title-display").innerText = `Room ➔ ${roomName}`;
         });
 
         socket.on('join success', (data) => {
             document.getElementById("lobby-container").classList.add("hidden");
             document.getElementById("cinema-container").classList.remove("hidden");
-            
-            if (location.hash !== "#room") {
-                history.pushState({ inRoom: true }, "", "#room");
-            }
-
-            const urlToLoad = data.videoUrl || initialVideoUrl;
-            if(urlToLoad) loadVideoSource(urlToLoad);
+            if(data.videoUrl) loadVideoSource(data.videoUrl);
         });
 
-        socket.on('join error', (errorMsg) => alert(errorMsg));
+        socket.on('join error', (msg) => alert(msg));
 
-        window.addEventListener('popstate', (event) => {
-            document.getElementById("cinema-container").classList.add("hidden");
-            document.getElementById("lobby-container").classList.remove("hidden");
-            
-            if (document.body.classList.contains("cinema-mode-active")) {
-                toggleCinemaMode(true);
-            }
-            hideAllPlayers();
-        });
-
-        document.getElementById("inline-video-switcher").addEventListener("keypress", (e) => {
-            if (e.key === 'Enter') {
-                const newUrl = e.target.value.trim();
-                if (newUrl) {
-                    socket.emit('video action', { type: 'change_src', url: newUrl });
-                    loadVideoSource(newUrl);
-                    e.target.value = "";
-                }
-            }
-        });
-
-        document.getElementById("syncOverlay").addEventListener("click", () => {
-            document.getElementById("syncOverlay").style.display = "none";
-            if(currentEngine === "youtube" && ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
-        });
-
+        // مزامنة أزرار التشغيل والتوقف مؤقتاً
         function onPlayerStateChange(event) {
-            if (blockSyncEmit || currentEngine !== "youtube" || !ytPlayer) { blockSyncEmit = false; return; }
+            if (blockSyncEmit || !ytPlayer) { blockSyncEmit = false; return; }
             const time = ytPlayer.getCurrentTime();
             if (event.data == YT.PlayerState.PLAYING) {
                 socket.emit('video action', { type: 'play', time: time });
@@ -374,24 +291,31 @@
         }
 
         socket.on('video action', (data) => {
-            blockSyncEmit = true; 
-            if (data.type === 'change_src') {
-                loadVideoSource(data.url);
-                return;
-            }
+            blockSyncEmit = true;
+            if (data.type === 'change_src') return loadVideoSource(data.url);
+            if (!ytPlayer || typeof ytPlayer.seekTo !== 'function') return;
 
-            if (currentEngine === "youtube" && ytPlayer && typeof ytPlayer.seekTo === 'function') {
-                if(data.type === 'play') { ytPlayer.seekTo(data.time, true); ytPlayer.playVideo(); }
-                else if(data.type === 'pause') { ytPlayer.seekTo(data.time, true); ytPlayer.pauseVideo(); }
-                else if(data.type === 'seek') { ytPlayer.seekTo(data.time, true); }
+            if(data.type === 'play') { ytPlayer.seekTo(data.time, true); ytPlayer.playVideo(); }
+            else if(data.type === 'pause') { ytPlayer.seekTo(data.time, true); ytPlayer.pauseVideo(); }
+        });
+
+        document.getElementById("inline-video-switcher").addEventListener("keypress", (e) => {
+            if (e.key === 'Enter' && e.target.value.trim()) {
+                socket.emit('video action', { type: 'change_src', url: e.target.value.trim() });
+                loadVideoSource(e.target.value.trim());
+                e.target.value = "";
             }
         });
 
+        document.getElementById("syncOverlay").addEventListener("click", () => {
+            document.getElementById("syncOverlay").style.display = "none";
+            if(ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+        });
+
+        // المحادثة (الدردشة) والـ Emojis
         function sendQuickEmoji(emoji) {
             socket.emit("chat message", emoji);
-            const area = document.getElementById("chat-messages");
-            area.innerHTML += `<div class="msg-line msg-mine"><div class="msg-bubble" style="font-size: 22px;">${emoji}</div></div>`;
-            area.scrollTop = area.scrollHeight;
+            appendMsg("You", emoji, true);
         }
 
         document.getElementById("send-chat-btn").addEventListener("click", sendChatMessage);
@@ -399,45 +323,41 @@
             if(e.key === 'Enter') sendChatMessage();
             socket.emit('typing', true);
             clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => { socket.emit('typing', false); }, 2000);
+            typingTimeout = setTimeout(() => socket.emit('typing', false), 2000);
         });
 
         function sendChatMessage() {
             const input = document.getElementById("chat-input");
-            const text = input.value.trim();
-            if(!text) return;
-
-            socket.emit("chat message", text);
-            const area = document.getElementById("chat-messages");
-            area.innerHTML += `<div class="msg-line msg-mine"><div class="msg-bubble">${text}</div></div>`;
-            area.scrollTop = area.scrollHeight;
+            if(!input.value.trim()) return;
+            socket.emit("chat message", input.value.trim());
+            appendMsg("You", input.value.trim(), true);
             input.value = "";
             socket.emit('typing', false);
         }
 
-        socket.on("chat message", (data) => {
+        function appendMsg(user, text, isMine) {
             const area = document.getElementById("chat-messages");
-            const isEmoji = data.text.length <= 2 && /\p{Emoji}/u.test(data.text);
-            const bubbleStyle = isEmoji ? 'style="font-size: 22px;"' : '';
-            area.innerHTML += `<div class="msg-line msg-friend"><div class="msg-bubble" ${bubbleStyle}><strong>${data.username}</strong>${data.text}</div></div>`;
+            const cls = isMine ? "msg-mine" : "msg-friend";
+            area.innerHTML += `<div class="msg-line ${cls}"><div class="msg-bubble">${isMine ? '' : '<strong>'+user+'</strong>'}${text}</div></div>`;
             area.scrollTop = area.scrollHeight;
-            playPingSound();
-        });
+        }
 
+        socket.on("chat message", (data) => appendMsg(data.username, data.text, false));
         socket.on("system notification", (data) => {
-            const area = document.getElementById("chat-messages");
-            area.innerHTML += `<div class="msg-system"><span>${data.text}</span></div>`;
-            area.scrollTop = area.scrollHeight;
+            document.getElementById("chat-messages").innerHTML += `<div class="msg-system"><span>${data.text}</span></div>`;
         });
 
         socket.on("typing", (data) => {
             document.getElementById("typing-box").innerText = data.isTyping ? `✍️ ${data.username} is typing...` : '';
         });
 
-        socket.on("update users", (userList) => {
-            const uBox = document.getElementById("online-users-container");
-            uBox.innerHTML = "";
-            userList.forEach(user => { uBox.innerHTML += `<div class="user-badge">🟢 ${user.username}</div>`; });
+        socket.on("update users", (users) => {
+            const container = document.getElementById("online-users-container");
+            container.innerHTML = users.map(u => `<div class="user-badge">🟢 ${u.username}</div>`).join('');
+        });
+
+        document.getElementById("cinema-toggle-btn").addEventListener("click", () => {
+            document.body.classList.toggle("cinema-mode-active");
         });
     </script>
 </body>
