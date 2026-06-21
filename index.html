@@ -40,7 +40,7 @@
         .room-input-container { position: relative; width: 100%; }
         .gen-btn { position: absolute; right: 10px; top: 10px; background: var(--primary-purple); border: none; color: white; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
 
-        .cinema-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .cinema-layout { position: relative; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         @media (max-width: 850px) { .cinema-layout { grid-template-columns: 1fr; } }
 
         .video-block { position: relative; width: 100%; background: #000; border-radius: 12px; overflow: hidden; min-height: 450px; }
@@ -74,14 +74,43 @@
         .emoji-bar { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid #1c2136; margin-bottom: 8px; }
         .emoji-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
 
+        /* Cinema Mode Modifications */
         body.cinema-mode-active { background: #020205; }
         body.cinema-mode-active .container { max-width: 100%; padding: 10px; }
         body.cinema-mode-active .room-header, 
         body.cinema-mode-active .card:not(.video-block):not(.chat-box) { display: none !important; }
         body.cinema-mode-active .cinema-layout { grid-template-columns: 3fr 1fr; gap: 15px; }
+
+        /* New Floating Exit Button Styling */
+        .exit-cinema-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 10000;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            transition: 0.3s ease;
+            display: none;
+        }
+        .exit-cinema-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+        body.cinema-mode-active .exit-cinema-btn {
+            display: block !important;
+        }
     </style>
 </head>
 <body>
+
+    <button id="exit-cinema-floating-btn" class="exit-cinema-btn">❌ Close Cinema Mode</button>
 
     <div class="container">
         <div id="auth-container" class="card auth-box">
@@ -163,7 +192,6 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="module">
-        // Added onAuthStateChanged inside the import block for managing persistent user sessions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -190,7 +218,6 @@
         let typingTimeout = null;
         let isHost = false;
 
-        // Centralized History Navigation Engine
         function navigateTo(screenId) {
             document.getElementById("auth-container").classList.add("hidden");
             document.getElementById("lobby-container").classList.add("hidden");
@@ -200,7 +227,6 @@
             history.pushState({ currentScreen: screenId }, "", `#${screenId}`);
         }
 
-        // Handle Browser Back and Forward Navigation Events
         window.addEventListener("popstate", (event) => {
             document.getElementById("auth-container").classList.add("hidden");
             document.getElementById("lobby-container").classList.add("hidden");
@@ -213,16 +239,12 @@
             }
         });
 
-        // Seed initial history state upon initialization
         history.replaceState({ currentScreen: "auth-container" }, "", "");
 
-        // Firebase Auth Monitor Session Tracker
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // If a user session exists, securely slide them into the lobby automatically
                 handleLoginSuccess(user.displayName, user.photoURL, false);
             } else {
-                // Return explicitly to the landing authentication wall upon active signOut
                 navigateTo("auth-container");
             }
         });
@@ -414,8 +436,14 @@
             }).join('');
         });
 
+        // Toggle Cinema Mode Function
         document.getElementById("cinema-toggle-btn").addEventListener("click", () => {
             document.body.classList.toggle("cinema-mode-active");
+        });
+
+        // Event listener for the new floating close button
+        document.getElementById("exit-cinema-floating-btn").addEventListener("click", () => {
+            document.body.classList.remove("cinema-mode-active");
         });
     </script>
 </body>
