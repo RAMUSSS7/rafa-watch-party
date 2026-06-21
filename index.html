@@ -160,6 +160,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        // إعدادات مشروع الفايربيس الخاص بكِ
         const firebaseConfig = {
             apiKey: "AIzaSyCCt70GpMjDRcSRV5s201M03RtvPdPKTJY",
             authDomain: "rafa-watch-party.firebaseapp.com",
@@ -188,6 +189,7 @@
             document.getElementById("lobby-container").classList.remove("hidden");
         }
 
+        // كود تشغيل زر جوجل
         document.getElementById("google-login-btn").addEventListener("click", () => {
             signInWithPopup(auth, provider).then((result) => {
                 handleLoginSuccess(result.user.displayName, false);
