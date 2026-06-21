@@ -163,8 +163,9 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="module">
+        // Added onAuthStateChanged inside the import block for managing persistent user sessions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCCt7OGpMjDRCsRV5s201M03RtvPdPKTJY",
@@ -215,6 +216,17 @@
         // Seed initial history state upon initialization
         history.replaceState({ currentScreen: "auth-container" }, "", "");
 
+        // Firebase Auth Monitor Session Tracker
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // If a user session exists, securely slide them into the lobby automatically
+                handleLoginSuccess(user.displayName, user.photoURL, false);
+            } else {
+                // Return explicitly to the landing authentication wall upon active signOut
+                navigateTo("auth-container");
+            }
+        });
+
         function handleLoginSuccess(name, photoUrl, guestStatus) {
             myName = name;
             myPhoto = photoUrl || "";
@@ -231,9 +243,9 @@
         }
 
         document.getElementById("google-login-btn").addEventListener("click", () => {
-            signInWithPopup(auth, provider).then((result) => {
-                handleLoginSuccess(result.user.displayName, result.user.photoURL, false);
-            }).catch((error) => { alert("Google Sign in Failed: " + error.message); });
+            signInWithPopup(auth, provider).catch((error) => { 
+                alert("Google Sign in Failed: " + error.message); 
+            });
         });
 
         document.getElementById("guest-login-btn").addEventListener("click", () => {
@@ -243,8 +255,11 @@
         });
 
         document.getElementById("logout-btn").addEventListener("click", () => {
-            if(!isGuest) signOut(auth);
-            window.location.reload();
+            if(!isGuest) {
+                signOut(auth);
+            } else {
+                window.location.reload();
+            }
         });
 
         document.getElementById("rand-room-btn").addEventListener("click", () => {
